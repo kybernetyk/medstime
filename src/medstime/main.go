@@ -14,7 +14,11 @@ func main() {
     SharedSessionManager()
 	
 	web.Config.CookieSecret = "7C19QRmwf3mHZ9CPAaPQ0hsWeufKd"
-	web.Get("/", index)
+	web.Get("/", indexGet)
+	
+	web.Get("/login", loginGet)
+	web.Post("/login", loginPost)
+	
     // web.Get("/post", post)
     // 
     // web.Get("/rss.xml", rss)

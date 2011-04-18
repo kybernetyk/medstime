@@ -1,7 +1,7 @@
 package main
 
 import (
-    "os"
+//    "os"
     "fmt"
     "time"
     "sync"
@@ -26,7 +26,7 @@ func SharedSessionManager() *SessionManager {
     return g_SessionManager
 }
 
-func (self *SessionManager) NewSessionForAccount(acc Account) (session *Session, err os.Error) {
+func (self *SessionManager) CreateSessionForAccount(acc Account) (session *Session, ok bool) {
     self.mu.Lock()
     defer self.mu.Unlock()
   
@@ -38,29 +38,31 @@ func (self *SessionManager) NewSessionForAccount(acc Account) (session *Session,
     self.Sessions[ses.Id] = ses
     
     session = self.Sessions[ses.Id]
+    
+    ok = true
     return
 }
 
-func (self *SessionManager) SessionForSessionId(ses_id string) (session *Session, err os.Error) {
+func (self *SessionManager) SessionForSessionId(ses_id string) (session *Session, ok bool) {
     self.mu.RLock()
     defer self.mu.RUnlock()
     
-    var ok bool
     session, ok = self.Sessions[ses_id]
     if (!ok) {
-        err = os.NewError("No Session with this ID found!")
+      //  err = os.NewError("No Session with this ID found!")
         return
     }
     
     //check for timeout
     now := time.Seconds()
     if (now - session.LastActive) > session.TimeoutAfter {
-        err = os.NewError("Session timed out")
+        //err = os.NewError("Session timed out")
         //self.Sessions[ses_id] = nil, false //make a cleanup method that will be called periodically
+        ok = false
         return
     }
     session.LastActive = now
-    
+    ok = true
     return
 }
 

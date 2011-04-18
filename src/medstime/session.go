@@ -1,7 +1,7 @@
 package main
 
 import (
-    "os"
+//    "os"
 )
 
 type Session struct { 
@@ -26,15 +26,16 @@ func Cookie_StoreSession(setter CookieSetter, session *Session) {
     setter.SetSecureCookie("session_id", session.Id, session.TimeoutAfter)
 }
 
-func Cookie_RetrieveSession(getter CookieGetter) (session *Session, err os.Error) {
+func Cookie_RetrieveSession(getter CookieGetter) (session *Session, ok bool) {
     session_id, ok := getter.GetSecureCookie("session_id")
     if !ok {
-        err = os.NewError("No Cookie")
+        //err = os.NewError("No Cookie")
+        ok = false
         return
     }
     
     mgr := SharedSessionManager()
-    session, err = mgr.SessionForSessionId(session_id)
+    session, ok = mgr.SessionForSessionId(session_id)
         
     return 
 }
