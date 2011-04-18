@@ -1,7 +1,8 @@
 package main
 
 import (
-//    "os"
+    "time"
+    "web"
 )
 
 type Session struct { 
@@ -12,6 +13,7 @@ type Session struct {
 
 	AccountId int64
 }
+
 
 //let's add a little helper to web.go's web.Context
 type CookieSetter interface {
@@ -39,3 +41,26 @@ func Cookie_RetrieveSession(getter CookieGetter) (session *Session, ok bool) {
         
     return 
 }
+
+//retrieve session from cookie and return it, or redirect to location if no valid session found
+func SessionOrRedirect(ctx *web.Context, location string) *Session {
+    session, ok := Cookie_RetrieveSession(ctx)
+    if !ok {
+        ctx.Redirect(301, location)
+    } else {
+        session.LastActive = time.Seconds()
+    }
+    return session
+}
+
+//if the user session is valid redirect to location and return true. else do nothing and return false
+func RedirectIfSession(ctx *web.Context, location string) bool {
+    session, ok := Cookie_RetrieveSession(ctx)
+    if ok {
+        session.LastActive = time.Seconds()
+        ctx.Redirect(301, location)
+        return true
+    } 
+    return false
+}
+

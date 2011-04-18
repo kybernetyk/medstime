@@ -23,11 +23,7 @@ var errmap = map[string]string {
 }
 
 func loginGet(ctx *web.Context) {
-    session, _ := Cookie_RetrieveSession(ctx)
-    if session != nil {
-        ctx.Redirect(301, "/account")
-        return
-    }
+    if RedirectIfSession(ctx, "/account") {return}
 
     m := map[string]string {
         

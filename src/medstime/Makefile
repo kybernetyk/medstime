@@ -9,8 +9,9 @@ GOFILES=\
 	../shared/messageinterface.go\
 	session.go\
 	sessionmanager.go\
-	site_index.go\
+	site_account.go\
 	site_login.go\
+	site_index.go\
 	main.go
 
 include $(GOROOT)/src/Make.cmd

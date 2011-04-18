@@ -19,6 +19,8 @@ func main() {
 	web.Get("/login", loginGet)
 	web.Post("/login", loginPost)
 	
+	web.Get("/account", accountGet)
+	
     // web.Get("/post", post)
     // 
     // web.Get("/rss.xml", rss)
