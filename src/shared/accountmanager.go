@@ -29,6 +29,19 @@ func (self *AccountManager) AccountForEmailPassword(email, password string) (acc
     return
 }
 
+func (self *AccountManager) AccountForEmail(email string) (account Account, ok bool) {
+    var err os.Error
+    account, err = app.Db.GetAccountForEmail(email)
+    if err != nil {
+        ok = false
+        return
+    }
+    
+    ok = true
+    return
+}
+
+
 func (self *AccountManager) AccountForAccountId(acc_id int64) (account Account, ok bool) {
     var err os.Error
     account, err = app.Db.GetAccountForAccountId(acc_id)
@@ -47,11 +60,12 @@ func (self *AccountManager) StoreAccount(account Account) int64 {
 }
 
 func (self *AccountManager) CreateAccount(account Account) (acc_id int64, err os.Error) {
-   _, ok := self.AccountForEmailPassword(account.Email, account.Password)
+   _, ok := self.AccountForEmail(account.Email)
    if ok {
        err = os.NewError(err_SignupEmailExists)
        return
    }
+
 
    _, ok = self.AccountForAccountId(account.Id)
    if ok {
