@@ -66,30 +66,8 @@ func loginPost(ctx *web.Context) {
     }
     
     ses := app.SessionMgr.CurrentSession(ctx)
-    ses.Set("account", acc)
+    ses.Set("account_id", acc.Id)
     ses.Set("logged_in", true)
-  //  ses.Data["account"] = acc
-//    ses.Data["logged_in"] = true
     
     ctx.Redirect(301, "/account")
-    
-    /*_, ok = app.SessionMgr.CreateSessionForAccount(ctx, acc)
-    if !ok {
-        ctx.Redirect(301, "/login?err=99")
-        return
-    }
-    ctx.Redirect(301, "/account")*/
-    
-    //ctx.WriteString(fmt.Sprintf("user: %s, pass: %s, session: %#v", username, password, session))
-    
-    // if err != nil {
-    //     acc := Account{Id: 1234, Username: "joorek", Password: "warbird"}
-    //     ses, err := SharedSessionManager().NewSessionForAccount(acc)
-    //     if err != nil {
-    //         return "couldn't create new session!"
-    //     }
-    //     Cookie_StoreSession(ctx, ses)
-    //     return "stored"
-    // }
-    
 }

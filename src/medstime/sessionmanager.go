@@ -25,30 +25,6 @@ func NewSessionManager() *SessionManager {
 	return mgr
 }
 
-
-func (self *SessionManager) SessionForSessionId(ses_id string) (session *Session, ok bool) {
-	self.mu.RLock()
-	defer self.mu.RUnlock()
-
-	session, ok = self.Sessions[ses_id]
-	if !ok {
-		//  err = os.NewError("No Session with this ID found!")
-		return
-	}
-
-	//check for timeout
-	now := time.Seconds()
-	if (now - session.LastActive) > session.TimeoutAfter {
-		//err = os.NewError("Session timed out")
-		//self.Sessions[ses_id] = nil, false //make a cleanup method that will be called periodically
-		ok = false
-		return
-	}
-	session.LastActive = now
-	ok = true
-	return
-}
-
 func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) {
 	session_id, ok := ctx.GetSecureCookie("session_id")
 	if !ok {
@@ -56,12 +32,32 @@ func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) 
 		return
 	}
 
-	session, ok = self.SessionForSessionId(session_id)
+	session, ok = self.sessionForSessionId(session_id)
 	if !ok {
 		session = self.createSession(ctx)
 		return
 	}
 
+	return
+}
+
+func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session, ok bool) {
+	self.mu.RLock()
+	defer self.mu.RUnlock()
+
+	session, ok = self.Sessions[ses_id]
+	if !ok {
+		return
+	}
+
+	//check for timeout
+	now := time.Seconds()
+	if (now - session.LastActive) > session.TimeoutAfter {
+		ok = false
+		return
+	}
+	session.LastActive = now
+	ok = true
 	return
 }
 
