@@ -13,9 +13,7 @@ func loginGet(ctx *web.Context) {
         return
     }
    
-
-    m := map[string]string {
-        
+    m := map[string]string {    
     }
     
     estr, ok := GetErrorString(ctx)
@@ -28,9 +26,9 @@ func loginGet(ctx *web.Context) {
 }
 
 func loginPost(ctx *web.Context) {
-    username, ok := ctx.Params["username"]
+    email, ok := ctx.Params["email"]
     if !ok {
-        ctx.Redirect(301, "/login?err=" + err_LoginNoUsername)
+        ctx.Redirect(301, "/login?err=" + err_LoginNoEmail)
         return
     }
 
@@ -41,7 +39,7 @@ func loginPost(ctx *web.Context) {
     }
     
     accmgr := NewAccountManager()
-    acc, ok := accmgr.AccountForUsernamePassword(username, password)
+    acc, ok := accmgr.AccountForEmailPassword(email, password)
     if !ok {
         ctx.Redirect(301, "/login?err=" + err_LoginFailed)
         return

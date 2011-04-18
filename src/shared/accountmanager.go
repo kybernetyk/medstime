@@ -12,15 +12,15 @@ func NewAccountManager() *AccountManager {
     return acc
 }
 
-func (self *AccountManager) AccountForUsernamePassword(username, password string) (account Account, ok bool) {
+func (self *AccountManager) AccountForEmailPassword(email, password string) (account Account, ok bool) {
     var err os.Error
-    account, err = app.Db.GetAccountForUsername(username)
+    account, err = app.Db.GetAccountForEmail(email)
     if err != nil {
         ok = false
         return
     }
     
-    if account.Username == username && account.Password == password {
+    if account.Email == email && account.Password == password {
         ok = true
         return
     }
@@ -47,15 +47,15 @@ func (self *AccountManager) StoreAccount(account Account) int64 {
 }
 
 func (self *AccountManager) CreateAccount(account Account) (acc_id int64, err os.Error) {
-   _, ok := self.AccountForUsernamePassword(account.Username, account.Password)
+   _, ok := self.AccountForEmailPassword(account.Email, account.Password)
    if ok {
-       err = os.NewError(err_SignupUsernameExists)
+       err = os.NewError(err_SignupEmailExists)
        return
    }
 
    _, ok = self.AccountForAccountId(account.Id)
    if ok {
-       err = os.NewError(err_SignupUsernameExists)
+       err = os.NewError(err_SignupEmailExists)
        return
    }
 

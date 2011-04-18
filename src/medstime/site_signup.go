@@ -29,9 +29,9 @@ func signupGet(ctx *web.Context) {
 }
 
 func signupPost(ctx *web.Context) {
-    username, ok := ctx.Params["username"]
-    if !ok || len(username) == 0 {
-        ctx.Redirect(301, "/signup?err=" + err_SignupUsernameInvalid)
+    email, ok := ctx.Params["email"]
+    if !ok || len(email) == 0 {
+        ctx.Redirect(301, "/signup?err=" + err_SignupEmailInvalid)
         return
     }
 
@@ -42,7 +42,7 @@ func signupPost(ctx *web.Context) {
     }
     
     acc := Account{
-        Username: username,
+        Email: email,
         Password: password,
         Plan: 0,
         Id: 0,

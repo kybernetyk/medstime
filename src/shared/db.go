@@ -38,11 +38,11 @@ func (md *MongoDB) Disconnect() {
 
 }
 
-func (md *MongoDB) GetAccountForUsername(username string) (acc Account, err os.Error) {
+func (md *MongoDB) GetAccountForEmail(email string) (acc Account, err os.Error) {
 	type q map[string]interface{}
 
 	qry := q{
-		"$query": q{"username": username},
+		"$query": q{"email": email},
 	}
 
 	var docs []mongo.BSON

@@ -1,8 +1,8 @@
 package main
 
 type Account struct {
-	Username string
 	Password string
+	Email    string
 	Plan     int
 	Id       int64
 }
