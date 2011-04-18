@@ -8,8 +8,9 @@ import (
 )
 
 func accountGet(ctx *web.Context) {
-    session := SessionOrRedirect(ctx, "/login")
-    if session == nil {
+    session := app.SessionMgr.CurrentSession(ctx)
+    if !session.GetBool("logged_in") {
+        ctx.Redirect(301, "/login")
         return
     }
     

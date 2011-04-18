@@ -1,8 +1,6 @@
 package main
 
 import (
-    "time"
-    "web"
 )
 
 type Session struct { 
@@ -11,32 +9,47 @@ type Session struct {
 	LastActive   int64 //unix timestamp
 	TimeoutAfter int64 //seconds
 
-	AccountId int64
-	
 	Data map[string]interface{}
 }
 
-
-
-//retrieve session from cookie and return it, or redirect to location if no valid session found
-func SessionOrRedirect(ctx *web.Context, location string) *Session {
-    session, ok := app.SessionMgr.CurrentSession(ctx)
-    if !ok {
-        ctx.Redirect(301, location)
-    } else {
-        session.LastActive = time.Seconds()
+//generics would be cool
+func (self *Session) Set(key string, val interface{}) {
+    if val == nil {
+        self.Data[key] = nil, false
+        return
     }
-    return session
+    self.Data[key] = val
 }
 
-//if the user session is valid redirect to location and return true. else do nothing and return false
-func RedirectIfSession(ctx *web.Context, location string) bool {
-    session, ok := app.SessionMgr.CurrentSession(ctx)
-    if ok {
-        session.LastActive = time.Seconds()
-        ctx.Redirect(301, location)
-        return true
-    } 
-    return false
+func (self *Session) Get(key string) interface{} {
+    v, ok := self.Data[key]
+    if !ok {
+        return nil
+    }
+    return v
 }
 
+func (self *Session) GetBool(key string) bool {
+    v, ok := self.Data[key]
+    if !ok {
+       return false
+    }
+    return v.(bool)
+}
+
+func (self *Session) GetInt64(key string) int64 {
+    v, ok := self.Data[key]
+    if !ok {
+       return 0
+    }
+    return v.(int64)
+}
+
+
+func (self *Session) GetString(key string) string {
+    v, ok := self.Data[key]
+    if !ok {
+        return ""
+    }
+    return v.(string)
+}

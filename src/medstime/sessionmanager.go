@@ -2,10 +2,12 @@ package main
 
 import (
 	//    "os"
+	"rand"
 	"fmt"
 	"time"
 	"sync"
 	"crypto/md5"
+	"web"
 )
 
 type SessionManager struct {
@@ -23,35 +25,6 @@ func NewSessionManager() *SessionManager {
 	return mgr
 }
 
-func (self *SessionManager) CreateSession(setter CookieSetter) (session *Session, ok bool) {
-	self.mu.Lock()
-	defer self.mu.Unlock()
-
-	ses := new(Session)
-	ses.Data = make(map[string]interface{})
-	ses.LastActive = time.Seconds()
-	ses.TimeoutAfter = 60 * 60 //1 hour
-	self.Sessions[ses.Id] = ses
-
-	session = self.Sessions[ses.Id]
-
-	setter.SetSecureCookie("session_id", session.Id, session.TimeoutAfter)
-	
-    ok = true
-    return
-}
-
-func (self *SessionManager) CreateSessionForAccount(setter CookieSetter, acc Account) (session *Session, ok bool) {
-    session, ok = self.CreateSession(setter)
-    if !ok {
-        return
-    }
-
-    session.Id = md5Hash(fmt.Sprintf("%s%d%s", acc.Username, time.Seconds(), acc.Password))
-	session.AccountId = acc.Id
-
-	return
-}
 
 func (self *SessionManager) SessionForSessionId(ses_id string) (session *Session, ok bool) {
 	self.mu.RLock()
@@ -76,32 +49,42 @@ func (self *SessionManager) SessionForSessionId(ses_id string) (session *Session
 	return
 }
 
-func (self *SessionManager) CurrentSession(getter CookieGetter) (session *Session, ok bool) {
-	session_id, ok := getter.GetSecureCookie("session_id")
+func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) {
+	session_id, ok := ctx.GetSecureCookie("session_id")
 	if !ok {
-		//err = os.NewError("No Cookie")
-		ok = false
+		session = self.createSession(ctx)
 		return
 	}
 
 	session, ok = self.SessionForSessionId(session_id)
+	if !ok {
+		session = self.createSession(ctx)
+		return
+	}
 
 	return
 }
 
+func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
+	self.mu.Lock()
+	defer self.mu.Unlock()
+
+	ses := new(Session)
+	ses.Data = make(map[string]interface{})
+	ses.LastActive = time.Seconds()
+	ses.TimeoutAfter = 60 * 60 //1 hour
+
+	ses.Id = md5Hash(fmt.Sprintf("%d%d%d", rand.Int31(), time.Seconds(), rand.Int31()))
+
+	self.Sessions[ses.Id] = ses
+	session = self.Sessions[ses.Id]
+
+	ctx.SetSecureCookie("session_id", session.Id, session.TimeoutAfter)
+	return
+}
 
 func md5Hash(str string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(str))
 	return fmt.Sprintf("%x", hasher.Sum())
 }
-
-//let's add a little helper to web.go's web.Context
-type CookieSetter interface {
-    SetSecureCookie(name string, val string, age int64)
-}
-
-type CookieGetter interface {
-    GetSecureCookie(name string) (string, bool)
-}
-

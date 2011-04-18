@@ -23,7 +23,12 @@ var errmap = map[string]string {
 }
 
 func loginGet(ctx *web.Context) {
-    if RedirectIfSession(ctx, "/account") {return}
+    session := app.SessionMgr.CurrentSession(ctx)
+    if session.GetBool("logged_in") {
+        ctx.Redirect(301, "/account")
+        return
+    }
+   
 
     m := map[string]string {
         
@@ -60,12 +65,20 @@ func loginPost(ctx *web.Context) {
         return
     }
     
-    _, ok = app.SessionMgr.CreateSessionForAccount(ctx, acc)
+    ses := app.SessionMgr.CurrentSession(ctx)
+    ses.Set("account", acc)
+    ses.Set("logged_in", true)
+  //  ses.Data["account"] = acc
+//    ses.Data["logged_in"] = true
+    
+    ctx.Redirect(301, "/account")
+    
+    /*_, ok = app.SessionMgr.CreateSessionForAccount(ctx, acc)
     if !ok {
         ctx.Redirect(301, "/login?err=99")
         return
     }
-    ctx.Redirect(301, "/account")
+    ctx.Redirect(301, "/account")*/
     
     //ctx.WriteString(fmt.Sprintf("user: %s, pass: %s, session: %#v", username, password, session))
     
