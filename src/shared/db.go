@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/mikejs/gomongo/mongo"
 	"sync"
-	"time"
+//	"time"
 )
 
 const (
@@ -52,7 +52,7 @@ func (md *MongoDB) GetAccountForUsername(username string) (err os.Error, acc Acc
 
 	var docs []mongo.BSON
 	docs, err = md.getDocsForQuery(col_accounts, qry, 0, 1)
-	if e != nil {
+	if err != nil {
 		return
 	}
 
@@ -72,14 +72,14 @@ func (md *MongoDB) getDocsForQuery(collection string, qryobj interface{}, skip, 
 	}
 
 	var documents *mongo.Cursor
-	docsuments, err = md.db.GetCollection(collection).Query(query, skip, limit)
+	documents, err = md.db.GetCollection(collection).Query(query, skip, limit)
 	if err != nil {
 		return
 	}
 
 	var doc mongo.BSON
 	for documents.HasMore() {
-		doc, err = documentss.GetNext()
+		doc, err = documents.GetNext()
 		if err != nil {
 			return
 		}
