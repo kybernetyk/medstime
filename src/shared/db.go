@@ -4,22 +4,17 @@ import (
 	"os"
 	"fmt"
 	"github.com/mikejs/gomongo/mongo"
-	"sync"
-//	"time"
 )
 
 const (
-	db_name = "medstime"
+	db_name      = "medstime"
 	col_accounts = "accounts"
-	)
+)
 
 type MongoDB struct {
 	db   *mongo.Database
 	conn *mongo.Connection
-	
-	//not sure if the driver does its own locking ...
-	postmu    sync.RWMutex
-	commentmu sync.RWMutex
+
 }
 
 func NewMongoDB() *MongoDB {
@@ -43,16 +38,35 @@ func (md *MongoDB) Disconnect() {
 
 }
 
-func (md *MongoDB) GetAccountForUsername(username string) (err os.Error, acc Account) {
+func (md *MongoDB) GetAccountForUsername(username string) (acc Account, err os.Error) {
 	type q map[string]interface{}
 
 	qry := q{
-		"$query":   q{"username": username},
+		"$query": q{"username": username},
 	}
 
 	var docs []mongo.BSON
 	docs, err = md.getDocsForQuery(col_accounts, qry, 0, 1)
-	if err != nil {
+	if err != nil || len(docs) == 0 {
+		err = os.NewError("Account not found.")
+		return
+	}
+
+	err = mongo.Unmarshal(docs[0].Bytes(), &acc)
+	return
+}
+
+func (md *MongoDB) GetAccountForAccountId(acc_id int64) (acc Account, err os.Error) {
+	type q map[string]interface{}
+
+	qry := q{
+		"$query": q{"id": acc_id},
+	}
+
+	var docs []mongo.BSON
+	docs, err = md.getDocsForQuery(col_accounts, qry, 0, 1)
+	if err != nil || len(docs) == 0 {
+		err = os.NewError("Account not found.")
 		return
 	}
 
@@ -61,10 +75,49 @@ func (md *MongoDB) GetAccountForUsername(username string) (err os.Error, acc Acc
 }
 
 
-func (md *MongoDB) getDocsForQuery(collection string, qryobj interface{}, skip, limit int32) (docs []mongo.BSON, err os.Error) {
-	md.postmu.Lock()
-	defer md.postmu.Unlock()
+func (md *MongoDB) GetAccountCount() int64 {
+	type q map[string]interface{}
 
+	qry := q{
+		"$query": q{},
+	}
+
+	return md.getCountForQuery(col_accounts, qry)
+}
+
+func (md *MongoDB) StoreAccount(account Account) (acc_id int64, err os.Error) {
+
+	//create new acc
+	if account.Id == 0 {
+		qry, _ := mongo.Marshal(map[string]string{})
+		count, _ := md.db.GetCollection("accounts").Count(qry)
+		count++
+
+		acc_id = count
+		account.Id = acc_id
+		doc, _ := mongo.Marshal(account)
+		err = md.db.GetCollection("accounts").Insert(doc)
+		return
+	} else { //update post
+		type q map[string]interface{}
+		m := q{"id": account.Id}
+
+		var query mongo.BSON
+		query, err = mongo.Marshal(m)
+		if err != nil {
+			return
+		}
+
+		doc, _ := mongo.Marshal(account)
+		err = md.db.GetCollection("accounts").Update(query, doc)
+		acc_id = account.Id
+	}
+
+	return
+}
+
+
+func (md *MongoDB) getDocsForQuery(collection string, qryobj interface{}, skip, limit int32) (docs []mongo.BSON, err os.Error) {
 	var query mongo.BSON
 	query, err = mongo.Marshal(qryobj)
 	if err != nil {
@@ -86,6 +139,21 @@ func (md *MongoDB) getDocsForQuery(collection string, qryobj interface{}, skip, 
 		docs = append(docs, doc)
 	}
 	return
+}
+
+func (md *MongoDB) getCountForQuery(collection string, qryobj interface{}) int64 {
+	var query mongo.BSON
+	query, err := mongo.Marshal(qryobj)
+	if err != nil {
+		return 0
+	}
+
+	count, err := md.db.GetCollection(collection).Count(query)
+	if err != nil {
+		return 0
+	}
+
+	return count
 }
 
 

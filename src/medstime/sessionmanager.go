@@ -41,6 +41,12 @@ func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) 
 	return
 }
 
+func (self *SessionManager) DestroyCurrentSession(ctx *web.Context) {
+    session := self.CurrentSession(ctx)
+    self.Sessions[session.Id] = nil, false
+    ctx.SetSecureCookie("session_id", "", session.TimeoutAfter)
+}
+
 func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session, ok bool) {
 	self.mu.RLock()
 	defer self.mu.RUnlock()
@@ -53,10 +59,11 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	//check for timeout
 	now := time.Seconds()
 	if (now - session.LastActive) > session.TimeoutAfter {
+	    self.Sessions[session.Id] = nil, false
 		ok = false
 		return
 	}
-	session.LastActive = now
+//	session.LastActive = now
 	ok = true
 	return
 }

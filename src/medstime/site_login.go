@@ -6,22 +6,6 @@ import (
 //    "fmt"
 )
 
-const (
-    err_None = ""
-    err_NoUsername = "1"
-    err_NoPass = "2"
-    err_LoginFailed = "3"
-    err_Critical = "99"
-)
-
-var errmap = map[string]string {
-    err_None: "",
-    err_NoUsername: "No Username",
-    err_NoPass: "No Password",
-    err_LoginFailed: "Login Wrong",
-    err_Critical: "Critical Error! O M G!",
-}
-
 func loginGet(ctx *web.Context) {
     session := app.SessionMgr.CurrentSession(ctx)
     if session.GetBool("logged_in") {
@@ -33,12 +17,10 @@ func loginGet(ctx *web.Context) {
     m := map[string]string {
         
     }
-    err, ok := ctx.Params["err"]
+    
+    estr, ok := GetErrorString(ctx)
     if ok {
-        e, o := errmap[err]
-        if o {
-            m["Error"] = e
-        }
+        m["Error"] = estr
     }
         
     s := mustache.RenderFile("templ/login.mustache", &m)
@@ -48,20 +30,20 @@ func loginGet(ctx *web.Context) {
 func loginPost(ctx *web.Context) {
     username, ok := ctx.Params["username"]
     if !ok {
-        ctx.Redirect(301, "/login?err=1")
+        ctx.Redirect(301, "/login?err=" + err_LoginNoUsername)
         return
     }
 
     password, ok := ctx.Params["password"]
     if !ok {
-        ctx.Redirect(301, "/login?err=2")
+        ctx.Redirect(301, "/login?err=" + err_LoginNoPass)
         return
     }
     
     accmgr := NewAccountManager()
     acc, ok := accmgr.AccountForUsernamePassword(username, password)
     if !ok {
-        ctx.Redirect(301, "/login?err=3")
+        ctx.Redirect(301, "/login?err=" + err_LoginFailed)
         return
     }
     
@@ -70,4 +52,9 @@ func loginPost(ctx *web.Context) {
     ses.Set("logged_in", true)
     
     ctx.Redirect(301, "/account")
+}
+
+func logoutGet(ctx *web.Context) {
+    app.SessionMgr.DestroyCurrentSession(ctx)
+    ctx.Redirect(301, "/")
 }

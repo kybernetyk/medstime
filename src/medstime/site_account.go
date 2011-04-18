@@ -2,7 +2,7 @@ package main
 
 import (
     "web"
-//    "mustache"
+    "mustache"
     "fmt"
 //    "time"
 )
@@ -13,21 +13,15 @@ func accountGet(ctx *web.Context) {
         ctx.Redirect(301, "/login")
         return
     }
+
+    accmgr := NewAccountManager()
+    acc, _ := accmgr.AccountForAccountId(session.GetInt64("account_id"))
     
-    ctx.WriteString(fmt.Sprintf("%#v", session))
-    
-    // m := map[string]string {
-    //     
-    // }
-    // err, ok := ctx.Params["err"]
-    // if ok {
-    //     e, o := errmap[err]
-    //     if o {
-    //         m["Error"] = e
-    //     }
-    // }
-    //     
-    // s := mustache.RenderFile("templ/login.mustache", &m)
-    // ctx.WriteString(s)
+    m := map[string]string {
+        "Debug": fmt.Sprintf("%#v<br><br>%#v", session, acc),
+    }
+
+    s := mustache.RenderFile("templ/account.mustache", &m)
+    ctx.WriteString(s)
 }
 

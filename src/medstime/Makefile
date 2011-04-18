@@ -9,8 +9,10 @@ GOFILES=\
 	../shared/messageinterface.go\
 	session.go\
 	sessionmanager.go\
+	errors.go\
 	site_account.go\
 	site_login.go\
+	site_signup.go\
 	site_index.go\
 	main.go
 
