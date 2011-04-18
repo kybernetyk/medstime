@@ -5,20 +5,26 @@ import (
 	//	"fmt"
 )
 
+type Application struct {
+    Db *MongoDB
+    SessionMgr *SessionManager
+}
 
-var Db *MongoDB
+var app Application
 
 func main() {
-	Db = NewMongoDB()
-	Db.Connect()
-    SharedSessionManager()
+	db := NewMongoDB()
+	db.Connect()
+    
+    app = Application {
+        Db: db,
+        SessionMgr: NewSessionManager(),
+    }
 	
 	web.Config.CookieSecret = "7C19QRmwf3mHZ9CPAaPQ0hsWeufKd"
 	web.Get("/", indexGet)
-	
 	web.Get("/login", loginGet)
 	web.Post("/login", loginPost)
-	
 	web.Get("/account", accountGet)
 	
     // web.Get("/post", post)

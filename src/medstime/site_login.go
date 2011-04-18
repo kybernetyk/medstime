@@ -60,13 +60,11 @@ func loginPost(ctx *web.Context) {
         return
     }
     
-    session, ok := SharedSessionManager().CreateSessionForAccount(acc)
+    _, ok = app.SessionMgr.CreateSessionForAccount(ctx, acc)
     if !ok {
         ctx.Redirect(301, "/login?err=99")
         return
     }
-    Cookie_StoreSession(ctx, session)
-    
     ctx.Redirect(301, "/account")
     
     //ctx.WriteString(fmt.Sprintf("user: %s, pass: %s, session: %#v", username, password, session))
