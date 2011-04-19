@@ -1,6 +1,7 @@
 package main
 
 type ScheduleItem struct {
+	Id         int64
 	ScheduleId int64
 	Message    string
 	Hour       int

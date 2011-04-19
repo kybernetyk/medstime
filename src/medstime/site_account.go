@@ -20,6 +20,10 @@ func accountGet(ctx *web.Context) {
     m := map[string]string {
         "Debug": fmt.Sprintf("%#v<br><br>%#v", session, acc),
     }
+    
+    mgr := NewScheduleManager()
+    items := mgr.ScheduleItemsForAccount(acc)
+    fmt.Printf("%#v - %d\n", items, len(items))
 
     s := mustache.RenderFile("templ/account.mustache", &m)
     ctx.WriteString(s)
