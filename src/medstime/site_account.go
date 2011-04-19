@@ -42,7 +42,7 @@ func accountGet(ctx *web.Context) {
 }
 
 func hoursList(selected_hour string) []interface{} {
-    type MyHour struct {
+	type MyHour struct {
 		Hour     string
 		Selected string
 	}
@@ -60,16 +60,15 @@ func hoursList(selected_hour string) []interface{} {
 		}
 		hours = append(hours, h)
 	}
-	
+
 	return hours
 }
 
 func minutesList(selected_minute string) []interface{} {
-    type MyMinute struct {
+	type MyMinute struct {
 		Minute   string
 		Selected string
 	}
-
 
 	var minutes []interface{}
 	for i := 0; i < 60; i += 15 {
@@ -85,9 +84,9 @@ func minutesList(selected_minute string) []interface{} {
 		}
 		minutes = append(minutes, m)
 	}
-	
+
 	return minutes
-	
+
 }
 
 func accountNewScheduleGet(ctx *web.Context) {
@@ -98,16 +97,10 @@ func accountNewScheduleGet(ctx *web.Context) {
 	}
 
 	m := map[string]interface{}{
-		"Debug": ctx.Params,
+		"Debug":   ctx.Params,
+		"Hours":   hoursList(""),
+		"Minutes": minutesList(""),
 	}
-
-	type MyHour struct {
-		Hour     string
-		Selected string
-	}
-
-	m["Hours"] = hoursList("")
-    m["Minutes"] = minutesList("")
 
 	s := mustache.RenderFile("templ/account_newschedule.mustache", &m)
 	ctx.WriteString(s)
@@ -120,38 +113,46 @@ func accountNewSchedulePost(ctx *web.Context) {
 		return
 	}
 
-    if len(ctx.Params["message"]) == 0 {
-    m := map[string]interface{}{
-     "Debug":   ctx.Params,
-     "Message": ctx.Params["message"],
-     "Error": "No Message lol!",
-    }
-    
-    m["Hours"] = hoursList(ctx.Params["hour"])
-    m["Minutes"] = minutesList(ctx.Params["minute"])
-    
-    if e, ok := ctx.Params["err"]; ok {
-     m["Error"] = e
-    }
-    s := mustache.RenderFile("templ/account_newschedule.mustache", &m)
-    ctx.WriteString(s)
-    return
-    }
-
+	error := ""
+	if len(ctx.Params["message"]) == 0 {
+		error = "message no gief?"
+		goto bailout
+	}
 
 	accmgr := NewAccountManager()
 	acc, _ := accmgr.AccountForAccountId(session.GetInt64("account_id"))
 
-	//blah blah error
+    ihr, _ := strconv.Atoi64(ctx.Params["hour"])
+    imn, _ := strconv.Atoi64(ctx.Params["minute"])
+
 	mgr := NewScheduleManager()
+    scitms := mgr.ScheduleItemsForAccountAndOffset(acc, SecondsFromMidnight(ihr, imn))
+    if len(scitms) > 0 {
+            error = "a schedule for this time exists already!"
+            goto bailout
+    }
+
+bailout:
+	if len(error) > 0 {
+		m := map[string]interface{}{
+			"Debug":   ctx.Params,
+			"Message": ctx.Params["message"],
+			"Error":   error,
+			"Hours":   hoursList(ctx.Params["hour"]),
+			"Minutes": minutesList(ctx.Params["minute"]),
+		}
+
+		s := mustache.RenderFile("templ/account_newschedule.mustache", &m)
+		ctx.WriteString(s)
+		return
+	}
+
+	//get scheduled item count for items {accid, hour, minutes} -> if > 0 bail out
 	sched := mgr.AddScheduleItemToAccount(acc)
-	sched.Hour, _ = strconv.Atoi(ctx.Params["hour"])
-	sched.Minute , _ = strconv.Atoi(ctx.Params["minute"])
+	sched.OffsetFromMidnight = SecondsFromMidnight(ihr, imn)
+	//sched.Hour = ihr
+	//sched.Minute = imn
 	sched.Message = ctx.Params["message"]
 	mgr.UpdateScheduleItem(sched)
-    ctx.Redirect(301, "/login")
-    // 
-    // 
-    // // ctx.Redirect(301, "/account/new_schedule?selected_hour=" + ctx.Params["hour"] + "&err=Loli")
-
+	ctx.Redirect(301, "/account")
 }

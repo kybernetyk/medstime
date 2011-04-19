@@ -12,10 +12,9 @@
 </div>
 {{/Debug}}
 
-<div class="schedulebox" style="width: 400px; border: 1px dashed red;">
+<div class="schedulebox" style="width: 450px; border: 1px dashed red;">
 <form method="POST" action="/account/new_schedule">
- 	Message: <input type="text" name="message" size="30" value="{{Message}}"/><br />
-
+ 	Nachricht:<br> <textarea rows="4" cols="60" id="content" name="message">{{Message}}</textarea><br>
 	Stunde: 
 	<select name="hour">
 		{{#Hours}}
