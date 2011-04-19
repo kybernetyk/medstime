@@ -22,8 +22,18 @@ func accountGet(ctx *web.Context) {
     }
     
     mgr := NewScheduleManager()
+    id := mgr.AddScheduleItemToAccount(acc)
+    fmt.Printf("added schedule item %d to acc\n", id)
+    
     items := mgr.ScheduleItemsForAccount(acc)
     fmt.Printf("%#v - %d\n", items, len(items))
+    si := items[0]
+    si.Hour ++
+    mgr.UpdateScheduleItem(si)
+
+    items = mgr.ScheduleItemsForAccount(acc)
+    fmt.Printf("%#v - %d\n", items, len(items))
+
 
     s := mustache.RenderFile("templ/account.mustache", &m)
     ctx.WriteString(s)
