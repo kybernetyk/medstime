@@ -39,10 +39,6 @@ func (self *AccountManager) AccountForEmail(email string) (account Account, ok b
 		return
 	}
 
-    var x interface{}
-    x = &account
-    z := *x
-
 	err = mongo.Unmarshal(docs[0].Bytes(), &account)
 	if err != nil {
 	    ok = false
@@ -75,7 +71,7 @@ func (self *AccountManager) AccountForAccountId(acc_id int64) (account Account, 
 	return
 }
 
-func (self *AccountManager) StoreAccount(account Account) int64 {
+func (self *AccountManager) UpdateAccount(account Account) int64 {
     m := querymap{"id": account.Id}
     ok := app.Db.Update(col_accounts, account, m)
     if !ok {
@@ -85,14 +81,12 @@ func (self *AccountManager) StoreAccount(account Account) int64 {
 }
 
 func (self *AccountManager) CreateAccount(account Account) (acc_id int64, err os.Error) {
-	_, ok := self.AccountForEmail(account.Email)
-	if ok {
+	if _, ok := self.AccountForEmail(account.Email); ok {
 		err = os.NewError(err_SignupEmailExists)
 		return
 	}
 
-	_, ok = self.AccountForAccountId(account.Id)
-	if ok {
+	if _, ok := self.AccountForAccountId(account.Id); ok {
 		err = os.NewError(err_SignupEmailExists)
 		return
 	}
@@ -102,8 +96,7 @@ func (self *AccountManager) CreateAccount(account Account) (acc_id int64, err os
     count++
     account.Id = count
     
-    ok = app.Db.Insert(col_accounts, account)
-    if !ok {
+    if ok := app.Db.Insert(col_accounts, account); !ok {
         err = os.NewError(err_Critical)
         return
     }
