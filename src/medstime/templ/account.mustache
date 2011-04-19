@@ -5,3 +5,13 @@
 	{{{Debug}}}
 </p>
 {{/Debug}}
+
+
+<div class="schedules">
+<ul>
+	{{#Schedules}}
+	<li>{{Id}} - {{Message}} - {{Hour}}:{{Minute}}</li>
+	{{/Schedules}}
+</ul>
+<a href="/account/new_schedule">Termin zufuegen</a>
+</div>

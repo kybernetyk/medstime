@@ -34,6 +34,8 @@ func main() {
 
 
 	web.Get("/account", accountGet)
+	web.Get("/account/new_schedule", accountNewScheduleGet)
+	web.Post("/account/new_schedule", accountNewSchedulePost)
 	
     // web.Get("/post", post)
     // 

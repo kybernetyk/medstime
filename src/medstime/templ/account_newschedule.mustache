@@ -1,0 +1,35 @@
+{{#Error}}
+<div class="errorbox">
+	<h1>Fehler: {{Error}}</h1>
+</div>
+{{/Error}}
+
+{{#Debug}}
+<div class="debug">
+	<pre>
+		{{Debug}}
+	</pre>
+</div>
+{{/Debug}}
+
+<div class="schedulebox" style="width: 400px; border: 1px dashed red;">
+<form method="POST" action="/account/new_schedule">
+ 	Message: <input type="text" name="message" size="30" value="{{Message}}"/><br />
+
+	Stunde: 
+	<select name="hour">
+		{{#Hours}}
+		  <option {{Selected}}>{{Hour}}</option>
+		{{/Hours}}
+	</select>
+
+	Minute: 
+	<select name="minute">
+		{{#Minutes}}
+		<option {{Selected}}>{{Minute}}</option>
+		{{/Minutes}}
+	</select>
+	
+  <p><input type="submit" value="Anlegen" /></p>
+</form>
+</div>
