@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"fmt"
+	"github.com/mikejs/gomongo/mongo"
 )
 
 type AccountManager struct{}
@@ -33,16 +33,18 @@ func (self *AccountManager) AccountForEmail(email string) (account Account, ok b
 	}
 
 //	var docs []mongo.BSON
-	docs, err := app.Db.Query(col_accounts, qry, &Account{}, 1)
+	docs, err := app.Db.Query(col_accounts, qry, 0, 1)
 	if err != nil || len(docs) == 0 {
 		ok = false
 		return
 	}
-	
-	fmt.Println(docs[0])
 
-    account = *docs[0].(*Account)
-    fmt.Println(account)
+	err = mongo.Unmarshal(docs[0].Bytes(), &account)
+	if err != nil {
+	    ok = false
+	    return
+	}
+
 	ok = true
 	return
 }
@@ -53,13 +55,18 @@ func (self *AccountManager) AccountForAccountId(acc_id int64) (account Account, 
 	}
 
 //	var docs []mongo.BSON
-	docs, err := app.Db.Query(col_accounts, qry, &Account{}, 1)
+	docs, err := app.Db.Query(col_accounts, qry, 0, 1)
 	if err != nil || len(docs) == 0 {
 		ok = false
 		return
 	}
 
-    account = *docs[0].(*Account)
+	err = mongo.Unmarshal(docs[0].Bytes(), &account)
+	if err != nil {
+	    ok = false
+	    return
+	}
+
 	ok = true
 	return
 }

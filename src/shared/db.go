@@ -119,7 +119,7 @@ func (md *MongoDB) Disconnect() {
 // }
 
 
-func (md *MongoDB) Query(collection string, qryobj querymap, resulttype interface{}, limit int32) (docs []interface{}, err os.Error) {
+func (md *MongoDB) Query(collection string, qryobj querymap, skip, limit int32) (docs []mongo.BSON, err os.Error) {
 	var query mongo.BSON
 	query, err = mongo.Marshal(qryobj)
 	if err != nil {
@@ -127,7 +127,7 @@ func (md *MongoDB) Query(collection string, qryobj querymap, resulttype interfac
 	}
 
 	var documents *mongo.Cursor
-	documents, err = md.db.GetCollection(collection).Query(query, 0, limit)
+	documents, err = md.db.GetCollection(collection).Query(query, skip, limit)
 	if err != nil {
 		return
 	}
@@ -138,15 +138,8 @@ func (md *MongoDB) Query(collection string, qryobj querymap, resulttype interfac
 		if err != nil {
 			return
 		}
-		
-		err = mongo.Unmarshal(doc.Bytes(), resulttype)
-		if err != nil {
-		    fmt.Println(err)
-		}
-		docs = append(docs, resulttype)
-		fmt.Println(resulttype)
+		docs = append(docs, doc)
 	}
-	
 	return
 }
 
