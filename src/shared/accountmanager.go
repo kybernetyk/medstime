@@ -39,6 +39,10 @@ func (self *AccountManager) AccountForEmail(email string) (account Account, ok b
 		return
 	}
 
+    var x interface{}
+    x = &account
+    z := *x
+
 	err = mongo.Unmarshal(docs[0].Bytes(), &account)
 	if err != nil {
 	    ok = false
