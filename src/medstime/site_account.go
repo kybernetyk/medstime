@@ -4,7 +4,7 @@ import (
 	"web"
 	"mustache"
 	"fmt"
-	//    "time"
+	"strconv"
 )
 
 func accountGet(ctx *web.Context) {
@@ -120,21 +120,38 @@ func accountNewSchedulePost(ctx *web.Context) {
 		return
 	}
 
+    if len(ctx.Params["message"]) == 0 {
+    m := map[string]interface{}{
+     "Debug":   ctx.Params,
+     "Message": ctx.Params["message"],
+     "Error": "No Message lol!",
+    }
+    
+    m["Hours"] = hoursList(ctx.Params["hour"])
+    m["Minutes"] = minutesList(ctx.Params["minute"])
+    
+    if e, ok := ctx.Params["err"]; ok {
+     m["Error"] = e
+    }
+    s := mustache.RenderFile("templ/account_newschedule.mustache", &m)
+    ctx.WriteString(s)
+    return
+    }
+
+
+	accmgr := NewAccountManager()
+	acc, _ := accmgr.AccountForAccountId(session.GetInt64("account_id"))
+
 	//blah blah error
-
-	// ctx.Redirect(301, "/account/new_schedule?selected_hour=" + ctx.Params["hour"] + "&err=Loli")
-	m := map[string]interface{}{
-		"Debug":   ctx.Params,
-		"Message": ctx.Params["message"],
-	}
-
-	m["Hours"] = hoursList(ctx.Params["hour"])
-	m["Minutes"] = minutesList(ctx.Params["minute"])
-
-	if e, ok := ctx.Params["err"]; ok {
-		m["Error"] = e
-	}
-	s := mustache.RenderFile("templ/account_newschedule.mustache", &m)
-	ctx.WriteString(s)
+	mgr := NewScheduleManager()
+	sched := mgr.AddScheduleItemToAccount(acc)
+	sched.Hour, _ = strconv.Atoi(ctx.Params["hour"])
+	sched.Minute , _ = strconv.Atoi(ctx.Params["minute"])
+	sched.Message = ctx.Params["message"]
+	mgr.UpdateScheduleItem(sched)
+    ctx.Redirect(301, "/login")
+    // 
+    // 
+    // // ctx.Redirect(301, "/account/new_schedule?selected_hour=" + ctx.Params["hour"] + "&err=Loli")
 
 }
