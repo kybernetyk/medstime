@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"launchpad.net/gobson/bson"
-    "fmt"
 )
 
 type AccountManager struct{}
@@ -18,7 +17,6 @@ func (self *AccountManager) AccountForEmailPassword(email, password string) (acc
 	if !ok {
 		return
 	}
-    fmt.Printf("%#v\n", account)
 	if account.Email == email && account.Password == password {
 		ok = true
 		return
@@ -34,9 +32,11 @@ func (self *AccountManager) AccountForEmail(email string) (account Account, ok b
 		"$query": bson.M{"email": email},
 	}
 
-    err := app.Db.C("accounts").Find(qry).One(&account)
+    db, ses := GetDB()
+    defer ses.Close()
+
+    err := db.C("accounts").Find(qry).One(&account)
     if err != nil {
-        fmt.Println("AccountForEmail:" + err.String());
         ok = false
         return
     }
@@ -50,9 +50,11 @@ func (self *AccountManager) AccountForAccountId(acc_id int) (account Account, ok
 		"$query": bson.M{"id": acc_id},
 	}
 
-    err := app.Db.C("accounts").Find(qry).One(&account)
+    db, ses := GetDB()
+    defer ses.Close()
+
+    err := db.C("accounts").Find(qry).One(&account)
     if err != nil {
-        fmt.Println("AccountForAccountId: " + err.String());
         ok = false
         return
     }
@@ -66,7 +68,11 @@ func (self *AccountManager) UpdateAccount(account Account) int {
 	qry := bson.M{
 	    "id": account.Id,
     }
-    err := app.Db.C("accounts").Update(qry, &account)
+    
+    db, ses := GetDB()
+    defer ses.Close()
+    
+    err := db.C("accounts").Update(qry, &account)
 	if  err != nil {
 		return 0
 	}
@@ -84,11 +90,14 @@ func (self *AccountManager) CreateAccount(account Account) (acc_id int, err os.E
 		return
 	}
 
-	count, _ := app.Db.C("accounts").Count()
+    db, ses := GetDB()
+    defer ses.Close()
+
+	count, _ := db.C("accounts").Count()
 	count++
 	account.Id = count
 
-    err = app.Db.C("accounts").Insert(&account)
+    err = db.C("accounts").Insert(&account)
 	if err != nil {
 		err = os.NewError(err_Critical)
 		return

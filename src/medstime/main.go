@@ -3,25 +3,32 @@ package main
 import (
 	"web"
 	"launchpad.net/mgo"
+	"os"
 )
 
 type Application struct {
-	Db         *mgo.Database
 	SessionMgr *SessionManager
 }
 
 var app Application
+var mgoSession *mgo.Session
+
+func GetDB() (db *mgo.Database, session *mgo.Session){
+    session = mgoSession.Copy()
+    tmp := session.DB("medstime")
+    db = &tmp
+    return
+}
 
 func main() {
-	session, err := mgo.Mongo("127.0.0.1")
+    var err os.Error
+	mgoSession, err = mgo.Mongo("127.0.0.1")
 	if err != nil {
 		panic(err)
 	}
-	defer session.Close()
+	defer mgoSession.Close()
 
-    db := session.DB("medstime")
 	app = Application{
-		Db:         &db,
 		SessionMgr: NewSessionManager(),
 	}
 
