@@ -9,13 +9,16 @@ import (
 
 func accountGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
+
+	fmt.Printf("session: %#v\n", session)
+	
 	if !session.GetBool("logged_in") {
 		ctx.Redirect(301, "/login")
 		return
 	}
 
 	accmgr := NewAccountManager()
-	acc, _ := accmgr.AccountForAccountId(session.GetInt64("account_id"))
+	acc, _ := accmgr.AccountForAccountId(session.GetInt("account_id"))
 
 	m := map[string]interface{}{
 		"Debug": fmt.Sprintf("%#v<br><br>%#v", session, acc),
@@ -120,10 +123,10 @@ func accountNewSchedulePost(ctx *web.Context) {
 	}
 
 	accmgr := NewAccountManager()
-	acc, _ := accmgr.AccountForAccountId(session.GetInt64("account_id"))
+	acc, _ := accmgr.AccountForAccountId(session.GetInt("account_id"))
 
-    ihr, _ := strconv.Atoi64(ctx.Params["hour"])
-    imn, _ := strconv.Atoi64(ctx.Params["minute"])
+    ihr, _ := strconv.Atoi(ctx.Params["hour"])
+    imn, _ := strconv.Atoi(ctx.Params["minute"])
 
 	mgr := NewScheduleManager()
     scitms := mgr.ScheduleItemsForAccountAndOffset(acc, SecondsFromMidnight(ihr, imn))

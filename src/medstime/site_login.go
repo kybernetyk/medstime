@@ -3,7 +3,7 @@ package main
 import (
     "web"
     "mustache"
-//    "fmt"
+    "fmt"
 )
 
 func loginGet(ctx *web.Context) {
@@ -48,6 +48,7 @@ func loginPost(ctx *web.Context) {
     ses := app.SessionMgr.CurrentSession(ctx)
     ses.Set("account_id", acc.Id)
     ses.Set("logged_in", true)
+    fmt.Printf("session: %#v\n", ses)
     
     ctx.Redirect(301, "/account")
 }

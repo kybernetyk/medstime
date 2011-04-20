@@ -1,15 +1,15 @@
 package main
 
 type SMSInterface struct {
-	Id	int64
-	AccountId	int64
+	Id	int
+	AccountId	int
 
 	TelNumber	string
 }
 
 type MailInterface struct {
-	Id int64
-	AccountId int64
+	Id int
+	AccountId int
 
 	Address string
 }

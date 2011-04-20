@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/mikejs/gomongo/mongo"
+     "launchpad.net/gobson/bson"
+    // "launchpad.net/mgo"
 )
 
 type ScheduleManager struct{}
@@ -31,46 +32,50 @@ func (self *ScheduleManager) AddScheduleItemToAccount(account Account) ScheduleI
 
 func (self *ScheduleManager) ScheduleItemsForAccount(account Account) []ScheduleItem {
 	schedule, ok := self.scheduleForAccountId(account.Id)
+	fmt.Printf("schedule id: %d\n", schedule)
 	if !ok {
 		return nil
 	}
 
 	items, ok := self.scheduleItemsForScheduleId(schedule.Id)
+	fmt.Printf("items: %v\n", items)
 	if !ok {
+	    fmt.Printf("omg bai")
 		return nil
 	}
 	return items
 }
 
 func (self *ScheduleManager) UpdateScheduleItem(si ScheduleItem) {
-	m := querymap{"id": si.Id}
-	app.Db.Update(col_schedule_items, si, m)
+	m := bson.M{"id": si.Id}
+	app.Db.C("scheduleitems").Update(m, si)
 }
 
-func (self *ScheduleManager) ScheduleItemsForAccountAndOffset(account Account, offset int64) []ScheduleItem {
+func (self *ScheduleManager) ScheduleItemsForAccountAndOffset(account Account, offset int) []ScheduleItem {
 	schedule, ok := self.scheduleForAccountId(account.Id)
 	if !ok {
 		return nil
 	}
-	
-	qry := querymap{
-		"$query": querymap{"scheduleid": schedule.Id, "offsetfrommidnight": offset},
-	}
-	
-	fmt.Println(qry)
 
-	docs, err := app.Db.Query(col_schedule_items, qry, 0, 0)
-	if err != nil || len(docs) == 0 {
-		return nil
+	qry := bson.M{
+		"$query": bson.M{"scheduleid": schedule.Id, "offsetfrommidnight": offset},
 	}
+	
+	iter, err := app.Db.C("scheduleitems").Find(qry).Iter()
+    if err != nil {
+        return nil
+    }
 
     var items []ScheduleItem
-	for _, itembson := range docs {
-		item := ScheduleItem{}
-		mongo.Unmarshal(itembson.Bytes(), &item)
-		items = append(items, item)
-	}
-
+    for {
+        item := ScheduleItem{}
+        err = iter.Next(&item)
+        if err != nil {
+            break
+        }
+        items = append(items, item)
+    }
+    fmt.Println(qry)
 	return items
 }
 
@@ -79,6 +84,8 @@ func (self *ScheduleManager) createScheduleForAccount(account Account) Schedule 
 	sc := Schedule{
 		AccountId: account.Id,
 	}
+	
+	fmt.Printf("createScheduleForAccount %#v\n",account)
 
 	return self.createSchedule(sc)
 }
@@ -88,55 +95,52 @@ func (self *ScheduleManager) createSchedule(schedule Schedule) Schedule {
 		return schedule
 	}
 
-	qry := querymap{}
-	count := app.Db.Count(col_schedules, qry)
+
+	count, _ := app.Db.C("schedules").Count()
 	count++
 	schedule.Id = count
-	app.Db.Insert(col_schedules, schedule)
-
+    app.Db.C("schedules").Insert(schedule)
 	return schedule
 }
 
 
-func (self *ScheduleManager) scheduleForAccountId(acc_id int64) (schedule Schedule, ok bool) {
-	qry := querymap{
-		"$query": querymap{"accountid": acc_id},
+func (self *ScheduleManager) scheduleForAccountId(acc_id int) (schedule Schedule, ok bool) {
+	qry := bson.M{
+		"$query": bson.M{"accountid": acc_id},
 	}
 
-	docs, err := app.Db.Query(col_schedules, qry, 0, 1)
-	if err != nil || len(docs) == 0 {
-		ok = false
-		return
-	}
-
-	err = mongo.Unmarshal(docs[0].Bytes(), &schedule)
-	if err != nil {
-		ok = false
-		return
-	}
-
+    err := app.Db.C("schedules").Find(qry).One(&schedule)
+    fmt.Printf("scheduleForAccountId: %d = %#v\n", acc_id , schedule)
+    if err != nil {
+        fmt.Println(err.String())
+        ok = false
+        return
+    }
 	ok = true
 	return
 }
 
 
-func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int64) (items []ScheduleItem, ok bool) {
-	qry := querymap{
-		"$query": querymap{"scheduleid": sched_id},
-		"$orderby": querymap{"offsetfrommidnight": 1},
+func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int) (items []ScheduleItem, ok bool) {
+	qry := bson.M{
+		"$query":   bson.M{"scheduleid": sched_id},
+		"$orderby": bson.M{"offsetfrommidnight": 1},
 	}
+	
+	iter, err := app.Db.C("scheduleitems").Find(qry).Iter()
+    if err != nil {
+        ok = false
+        return
+    }
 
-	docs, err := app.Db.Query(col_schedule_items, qry, 0, 0)
-	if err != nil || len(docs) == 0 {
-		ok = false
-		return
-	}
-
-	for _, itembson := range docs {
-		item := ScheduleItem{}
-		mongo.Unmarshal(itembson.Bytes(), &item)
-		items = append(items, item)
-	}
+    for {
+        item := ScheduleItem{}
+        err = iter.Next(&item)
+        if err != nil {
+            break
+        }
+        items = append(items, item)
+    }
 
 	ok = true
 	return
@@ -144,11 +148,12 @@ func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int64) (items [
 
 
 func (self *ScheduleManager) addScheduleItem(si ScheduleItem) ScheduleItem {
-	qry := querymap{}
-	count := app.Db.Count(col_schedule_items, qry)
+	count, _ := app.Db.C("scheduleitems").Count()
 	count++
 	si.Id = count
-	app.Db.Insert(col_schedule_items, si)
+    app.Db.C("scheduleitems").Insert(si)
+	
+	//app.Db.Insert(col_schedule_items, si)
 
 	return si
 }

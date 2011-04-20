@@ -37,12 +37,12 @@ func (self *Session) GetBool(key string) bool {
     return v.(bool)
 }
 
-func (self *Session) GetInt64(key string) int64 {
+func (self *Session) GetInt(key string) int {
     v, ok := self.Data[key]
     if !ok {
        return 0
     }
-    return v.(int64)
+    return v.(int)
 }
 
 
