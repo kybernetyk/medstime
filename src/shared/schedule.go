@@ -27,8 +27,19 @@ func (itm ScheduleItem) Minute() string {
 	return fmt.Sprintf("%.2d", m)
 }
 
+func HourMinute(offset int) (hour, minute int) {
+	minute = (offset % (60 * 60)) / 60
+	hour = offset / (60 * 60)
+	return
+}
 //get number of seconds from midnight for a given hour:minute pair
 func SecondsFromMidnight(hour, minute int) int {
+	if hour < 0 || hour > 23 {
+		hour = 0
+	}
+	if minute < 0 || minute > 59 {
+		minute = 0
+	}
 	seconds := minute*60 + hour*(60*60)
 	return seconds
 }

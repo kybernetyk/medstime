@@ -1,15 +1,15 @@
 include $(GOROOT)/src/Make.inc
 
-TARG=medstime
+TARG=smsd
 GOFILES=\
-	../shared/htmlstrip.go\
-	../shared/post.go\
 	../shared/db.go\
-	../shared/mongo_db.go\
-	index.go\
-	admin.go\
-	css.go\
-	rss.go\
+	../shared/account.go\
+	../shared/accountmanager.go\
+	../shared/schedule.go\
+	../shared/schedulemanager.go\
+	../shared/errors.go\
+	../shared/messageinterface.go\
+	job.go\
 	main.go
 
 include $(GOROOT)/src/Make.cmd

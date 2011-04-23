@@ -1,8 +1,8 @@
 package main
 
 import (
-     "launchpad.net/gobson/bson"
-    // "launchpad.net/mgo"
+	"launchpad.net/gobson/bson"
+	// "launchpad.net/mgo"
 )
 
 type ScheduleManager struct{}
@@ -45,10 +45,35 @@ func (self *ScheduleManager) ScheduleItemsForAccount(account Account) []Schedule
 func (self *ScheduleManager) UpdateScheduleItem(si ScheduleItem) {
 	m := bson.M{"id": si.Id}
 
-    db, ses := GetDB()
-    defer ses.Close()
+	db, ses := GetDB()
+	defer ses.Close()
 
 	db.C("scheduleitems").Update(m, si)
+}
+
+func (self *ScheduleManager) ScheduleItemsForOffset(offset int) []ScheduleItem {
+	qry := bson.M{
+		"$query": bson.M{"offsetfrommidnight": offset},
+	}
+
+	db, ses := GetDB()
+	defer ses.Close()
+
+	iter, err := db.C("scheduleitems").Find(qry).Iter()
+	if err != nil {
+		return nil
+	}
+
+	var items []ScheduleItem
+	for {
+		item := ScheduleItem{}
+		err = iter.Next(&item)
+		if err != nil {
+			break
+		}
+		items = append(items, item)
+	}
+	return items
 }
 
 func (self *ScheduleManager) ScheduleItemsForAccountAndOffset(account Account, offset int) []ScheduleItem {
@@ -60,25 +85,24 @@ func (self *ScheduleManager) ScheduleItemsForAccountAndOffset(account Account, o
 	qry := bson.M{
 		"$query": bson.M{"scheduleid": schedule.Id, "offsetfrommidnight": offset},
 	}
-	
-	db, ses := GetDB()
-    defer ses.Close()
-    
-	
-	iter, err := db.C("scheduleitems").Find(qry).Iter()
-    if err != nil {
-        return nil
-    }
 
-    var items []ScheduleItem
-    for {
-        item := ScheduleItem{}
-        err = iter.Next(&item)
-        if err != nil {
-            break
-        }
-        items = append(items, item)
-    }
+	db, ses := GetDB()
+	defer ses.Close()
+
+	iter, err := db.C("scheduleitems").Find(qry).Iter()
+	if err != nil {
+		return nil
+	}
+
+	var items []ScheduleItem
+	for {
+		item := ScheduleItem{}
+		err = iter.Next(&item)
+		if err != nil {
+			break
+		}
+		items = append(items, item)
+	}
 	return items
 }
 
@@ -96,13 +120,13 @@ func (self *ScheduleManager) createSchedule(schedule Schedule) Schedule {
 		return schedule
 	}
 
-    db, ses := GetDB()
-    defer ses.Close()
+	db, ses := GetDB()
+	defer ses.Close()
 
 	count, _ := db.C("schedules").Count()
 	count++
 	schedule.Id = count
-    db.C("schedules").Insert(schedule)
+	db.C("schedules").Insert(schedule)
 	return schedule
 }
 
@@ -111,16 +135,15 @@ func (self *ScheduleManager) scheduleForAccountId(acc_id int) (schedule Schedule
 	qry := bson.M{
 		"$query": bson.M{"accountid": acc_id},
 	}
-	
-	db, ses := GetDB()
-    defer ses.Close()
-    
 
-    err := db.C("schedules").Find(qry).One(&schedule)
-    if err != nil {
-        ok = false
-        return
-    }
+	db, ses := GetDB()
+	defer ses.Close()
+
+	err := db.C("schedules").Find(qry).One(&schedule)
+	if err != nil {
+		ok = false
+		return
+	}
 	ok = true
 	return
 }
@@ -131,24 +154,24 @@ func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int) (items []S
 		"$query":   bson.M{"scheduleid": sched_id},
 		"$orderby": bson.M{"offsetfrommidnight": 1},
 	}
-	
-	db, ses := GetDB()
-    defer ses.Close()
-    	
-	iter, err := db.C("scheduleitems").Find(qry).Iter()
-    if err != nil {
-        ok = false
-        return
-    }
 
-    for {
-        item := ScheduleItem{}
-        err = iter.Next(&item)
-        if err != nil {
-            break
-        }
-        items = append(items, item)
-    }
+	db, ses := GetDB()
+	defer ses.Close()
+
+	iter, err := db.C("scheduleitems").Find(qry).Iter()
+	if err != nil {
+		ok = false
+		return
+	}
+
+	for {
+		item := ScheduleItem{}
+		err = iter.Next(&item)
+		if err != nil {
+			break
+		}
+		items = append(items, item)
+	}
 
 	ok = true
 	return
@@ -156,12 +179,12 @@ func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int) (items []S
 
 
 func (self *ScheduleManager) addScheduleItem(si ScheduleItem) ScheduleItem {
-    db, ses := GetDB()
-    defer ses.Close()
+	db, ses := GetDB()
+	defer ses.Close()
 
 	count, _ := db.C("scheduleitems").Count()
 	count++
 	si.Id = count
-    db.C("scheduleitems").Insert(si)
+	db.C("scheduleitems").Insert(si)
 	return si
 }
