@@ -37,7 +37,7 @@ func main() {
 
 	fmt.Println("Ok, ready to go!")
 
-	ticker := time.NewTicker(seconds(2))
+	ticker := time.NewTicker(minutes(1))
 L:
 	for {
 		select {

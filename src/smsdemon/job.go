@@ -19,17 +19,17 @@ func getSMSInterfaceForItem(item ScheduleItem) (iface SMSInterface, ok bool) {
 	iface = SMSInterface{
 		Id:        1234,
 		AccountId: 14414,
-		TelNumber: "48516520678",
+		TelNumber: "48504724143",
 	}
 	ok = true
 	return
 }
 
 func sendSMS(number, message string) {
-	fmt.Printf("sending '%s' to '%s' ...\n", message, number)
+	fmt.Printf("\t\tsending '%s' to '%s' ...\n", message, number)
 
 	s := sms.NewBulkSMSSMSSender("joorek", "warbird")
-	s.Testmode = 1     //don't send the sms, just perform an API supported test
+	//s.Testmode = 1     //don't send the sms, just perform an API supported test
 	s.RoutingGroup = 2 //let's use the cheap eco route
 
 	receivers := []string{number} //put a proper tel# here in
@@ -38,15 +38,15 @@ func sendSMS(number, message string) {
 	_, quote := s.GetQuote(receivers, message)
 	price := quote * 3.75 * 0.01 //quote is in credits. 1 credit = 3.75 eur cent
 
-	fmt.Printf("\tPrice for SMS(%s): %.4f EUR\n", number, price)
+	fmt.Printf("\t\t\tPrice for SMS(%s): %.4f EUR\n", number, price)
 
 	//send the sms
 	if err := s.Send(receivers, message); err != nil {
-		fmt.Printf("\tcouldn't send sms to '%s': %s\n",number, err.String())
+		fmt.Printf("\t\tcouldn't send sms to '%s': %s\n",number, err.String())
 		return
 	}
 
-	fmt.Printf("\tsms sent to '%s'!\n", number)
+	fmt.Printf("\t\tsms sent to '%s'!\n", number)
 }
 
 func DoJob() {
@@ -55,21 +55,20 @@ func DoJob() {
 	hour := now.Hour
 	minute := now.Minute
 
-	hour = 13
-	minute = 30
 	offset := SecondsFromMidnight(hour, minute)
 
-	fmt.Printf("doing job on %.2d:%.2d -> %d ...\n", hour, minute, offset)
+	fmt.Printf("[%s]: doing job on %.2d:%.2d -> %d ...\n",now.String(), hour, minute, offset)
 
 	items := getScheduleItems(offset)
 	if items == nil {
+		fmt.Printf("\tno items to send ...\n")
 		return
 	}
 
 	for _, item := range items {
 		iface, ok := getSMSInterfaceForItem(item)
 		if !ok {
-			fmt.Printf("No SMS interface found for item %#v!\n", item)
+			fmt.Printf("\tNo SMS interface found for item %#v!\n", item)
 			continue
 		}
 		go sendSMS(iface.TelNumber, item.Message)
