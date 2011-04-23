@@ -19,7 +19,7 @@ func getSMSInterfaceForItem(item ScheduleItem) (iface SMSInterface, ok bool) {
 	iface = SMSInterface{
 		Id:        1234,
 		AccountId: 14414,
-		TelNumber: "48504724143",
+		TelNumber: "491737649349",
 	}
 	ok = true
 	return
