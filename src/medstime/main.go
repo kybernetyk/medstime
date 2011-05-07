@@ -33,7 +33,7 @@ func main() {
 	}
 
 	web.Config.CookieSecret = "7C19QRmwf3mHZ9CPAaPQ0hsWeufKd"
-	web.Get("/", indexGet)
+	//web.Get("/", indexGet)
 
 	web.Get("/login", loginGet)
 	web.Post("/login", loginPost)

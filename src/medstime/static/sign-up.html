@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> SaaS WP Theme II</title>
+<link href="css/saas-common.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/saas-default.css" rel="stylesheet" type="text/css" media="all" />
+<!--[if IE]>
+<script src="js/html5.js"></script>
+<![endif]-->
+<meta name='robots' content='noindex,nofollow' />
+
+<script type='text/javascript' src='js/jquery/jquery.js?ver=1.4.2'></script> 
+<script type='text/javascript' src='js/easySlider1.5.js?ver=3.0'></script>
+<script type='text/javascript' src='js/saas.js?ver=3.0'></script>
+<script type='text/javascript' src='js/jquery.cookie.min.js?ver=3.0'></script>
+<script type='text/javascript' src='js/saas.twitter.js?ver=3.0'></script>
+
+</head>
+<body>
+<div class="header">
+	<div>
+		<div class="center">
+			<div class="topLinks">
+				<div class="menu-top-links-container">
+					<ul id="menu-top-links" class="menu">
+						<li class="menu-item current-menu-item"><a href="about.html">About</a></li>
+						<li class="menu-item"><a href="blog.html">Blog</a></li>
+						<li class="menu-item"><a href="help.html">Help</a></li>
+						<li class="menu-item"><a href="contact-us.html">Contact Us</a></li>
+					</ul>
+				</div>
+			</div>
+			<h1 id="logo"><a href="home.html"><img src="images/logo.png" alt="SaaS WP Theme II" /></a></h1>
+			<div class="nav">
+				<div class="menu-main-nav-container">
+					<ul id="menu-main-nav" class="menu">
+						<li class="menu-item"><a href="tour.html"><span>Tour</span></a></li>
+						<li class="menu-item"><a href="plans-pricing.html"><span>Plans &#038; Pricing</span></a></li>
+						<li class="menu-item"><a href="sign-up.html"><span>Sign Up!</span></a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="page-title">
+				<div>
+					<h2>Sign Up</h2>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--div.header end -->
+<!--div.container start -->
+<div class="container">
+	<div class="center">									
+		<form class="signupform" method="post" action="#">
+		<h5>Pricing Plan <em>(* Indicates required information)</em></h5>
+		<ul>
+			<li>
+				<label class="plan" for="plan">Plan:</label>
+				<select	class="plan" id="plan" name="plan">
+					<option value="Basic">Basic</option>
+					<option value="Student">Student</option>
+					<option value="Professional">Professional</option>
+					<option value="Commercial">Commercial</option>
+					<option value="Premium">Premium</option>
+				</select>
+				<em>*</em>
+			</li>
+		</ul>
+	
+		<h5>Billing Info</h5>
+		<ul>
+			<li>
+				<label for="firstName">First Name:</label>
+				<input maxlength="50" id="firstName" name="firstName" type="text" />
+				<em>*</em>
+				
+				<label class="mi" for="middleName">MI:</label>
+				<input class="mi" maxlength="10" id="middleName" name="middlename" type="text" />
+			</li>
+			
+			<li>
+				<label for="lastName">Last Name:</label>
+				<input maxlength="50" id="lastName" name="lastName" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="company">Company Name:</label>
+				<input class="company" maxlength="100" id="company" name="company" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="email">Email Address:</label>
+				<input maxlength="50" id="email" name="email" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="street">Streeet Address:</label>
+				<input class="street" maxlength="100" id="street" name="street" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="city">City:</label>
+				<input class="city" maxlength="50" id="city" name="city" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="zip">ZIP:</label>
+				<input class="zip" maxlength="10" id="zip" name="zip" type="text" />
+				<em>*</em>
+				
+				<label class="state" for="state">State:</label>
+				<select	class="state" id="state" name="state">
+					<option value="">Select State</option>
+				</select>
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="country">Country:</label>
+				<select class="country" id="country" name="country">
+					<option value="">Select Country</option>
+				</select>
+				<em>*</em>
+				
+				<label class="phone" for="phone">Phone:</label>
+				<input class="phone" maxlength="20" id="phone" name="phone" type="text" />
+				<em>*</em>
+			</li>
+		</ul>
+	
+		<h5>Secure Payment Info</h5>
+		<ul>
+			<li>
+				<label for="ccType">Credit Card:</label>
+				<select class="cctype" id="ccType" name="ccType">
+					<option value="Visa">Visa</option>
+				</select>
+				<em>*</em>
+				<img src="images/order-cc.png" alt="Credit Card" />
+			</li>
+			
+			<li>
+				<label for="ccNumber">Card Number:</label>
+				<input class="ccnumber" maxlength="16" id="ccNumber" name="ccNumber" type="text" />
+				<em>*</em>
+				
+				<label class="expires" for="ccExpMonth">Expires:</label>
+				<input class="expires" maxlength="2" id="ccExpMonth" name="ccExpMonth" type="text" />
+				<span>/</span>
+				<input class="expires" maxlength="4" id="ccExpYear" name="ccExpYear" type="text" />
+				<em>*</em>
+			</li>
+			
+			<li>
+				<label for="ccCvv">CVV:</label>
+				<input class="cvv" maxlength="4" id="ccCvv" name="ccCvv" type="text" />
+				<em>*</em>
+				<img src="images/order-cvv.png" alt="CVV" />
+			</li>
+			
+			<li class="a-center">
+				<button type="submit"><span class="button"><span>Sign Up!</span></span></button>
+			</li>
+		</ul>
+		</form>
+	</div>
+</div>
+
+<!--div.container end -->
+<!--div.footer start -->
+<div class="footer">
+	<div class="prom">
+		<div class="center">
+			<h2>
+				<strong>Start doing stuff now! </strong>Try us out free for 30 days.			
+			</h2>
+			<div class="right"><a href="sign-up.html"><img src="images/btn-sign-up.png" alt="Sign Up!"></a></div>
+		</div>
+	</div>
+	<div class="links">
+		<div class="center">	
+			<div>
+				<h3>Company</h3>
+				<p>
+					<a href="#">Leadership</a><br />
+					<a href="#">Partners</a><br />
+					<a href="#">Investors</a>
+				</p>
+			</div>
+			<div>
+				<h3>Keep in Touch</h3>
+				<ul class="social-links">
+					<li><a href="http://twitter.com/themeteam"><img src="images/i_socialTwitter.png" alt="" /></a></li>
+					<li><a href="http://www.facebook.com/facebook-name"><img src="images/i_socialFacebook.png" alt="" /></a></li>
+					<li><a href="http://www.flickr.com/photos/flickr-name/"><img src="images/i_socialFlickr.png" alt="" /></a></li>
+					<li><a href="http://saas-wp-ii.worryfreelabs.com/feed/"><img src="images/i_socialRss.png" alt="" /></a></li>
+					<li><a href="http://linkedin.com/in/linkedin-name"><img src="images/i_socialLinkedin.png" alt="" /></a></li>
+					<li><a href="http://www.youtube.com/user/youtube-name"><img src="images/i_socialYoutube.png" alt="" /></a></li>
+				</ul>
+			</div>
+			<div>
+				<h3>Support</h3>
+				<p>
+					<a href="#">Create a Support Ticket</a><br />
+					<a href="#">FAQs</a><br />
+					<a href="#">Forum</a><br />
+					<a href="#">Live Chat</a>
+				</p>
+			</div>
+			<div>
+				<h3>SaaS Corp, Inc.</h3>
+				<p>544 Oenoke Ridge<br />
+				New Canaan, CT 06480</p>
+				<p><a href="http://gothemeteam.com/">http://gothemeteam.com/</a><br />
+				Toll Free: (800) 555-1212</p>
+			</div>		
+		</div>
+	</div>
+</div>
+<!--div.footer end -->
+
+<script type='text/javascript' src='js/jquery/jquery.form.js?ver=2.02m'></script>
+</body>
+</html>

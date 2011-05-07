@@ -7,7 +7,7 @@ import (
 
 func main() {
 	s := sms.NewBulkSMSSMSSender("joorek", "warbird")
-	s.Testmode = 1     //don't send the sms, just perform an API supported test
+	s.Testmode = 0     //don't send the sms, just perform an API supported test
 	s.RoutingGroup = 2 //let's use the cheap eco route
 
 	msg := "tabletten nehmen!"
