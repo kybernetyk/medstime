@@ -5,6 +5,7 @@ import (
 	"mustache"
 	"fmt"
 	"strconv"
+	"log"
 )
 
 func accountGet(ctx *web.Context) {
@@ -21,7 +22,7 @@ func accountGet(ctx *web.Context) {
 func accountMainGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
 
-	fmt.Printf("session: %#v\n", session)
+	log.Printf("session: %#v\n", session)
 
 	if !session.GetBool("logged_in") {
 		ctx.Redirect(301, "/account/login")
@@ -47,7 +48,7 @@ func accountMainGet(ctx *web.Context) {
 	// mgr.UpdateScheduleItem(si)
 
 	items := mgr.ScheduleItemsForAccount(acc)
-	fmt.Printf("%#v - %d\n", items, len(items))
+	log.Printf("%#v - %d\n", items, len(items))
 
 	m["Schedules"] = items
 

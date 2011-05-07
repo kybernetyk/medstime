@@ -3,8 +3,8 @@ package main
 import (
 	"launchpad.net/mgo"
 	"os"
-	"fmt"
 	"time"
+	"log"
 )
 
 var control_chan chan string = make(chan string)
@@ -29,13 +29,12 @@ func main() {
 	var err os.Error
 	mgoSession, err = mgo.Mongo("127.0.0.1")
 	if err != nil {
-		fmt.Println(err.String())	
-		os.Exit(-1)
+		log.Fatal(err.String())
 		return
 	}
 	defer mgoSession.Close()
 
-	fmt.Println("Ok, ready to go!")
+	log.Println("Ok, ready to go!")
 
 	ticker := time.NewTicker(minutes(1))
 L:
