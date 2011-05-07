@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
 <title>Reality Admin</title>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
@@ -60,7 +61,7 @@
             
     			<li><p>Signed in as <strong>Johnathan Doe</strong></p></li>
                 <li><a href="#" class="first">Settings</a></li>
-                <li><a href="/account/logout" class="last">Sign Out</a></li>
+                <li><a href="#" class="last">Sign Out</a></li>
                 
             </ul>
             
@@ -124,7 +125,9 @@
 <!-- EVERYTING BELOW IS THE MAIN CONTENT -->
 
 <div id="main_content_wrap" class="container_12">
-		<!-- start icon dock-->
+
+
+	<!-- start icon dock-->
 	<div id="icondock" class="grid_12">
 	 
       <ul>
@@ -141,63 +144,12 @@
    			<li><a href="#" rel="tipsy" title="Set Reminders"><img src="images/icondock/bell.png" alt="Reminders" /><br />Reminders</a></li>
 
 	  </ul>
+
+    
 	</div><!-- end icon dock-->
     
     <div class="clearfix">&nbsp;</div>
-	    {{#Debug}}
-             <!-- INFORMATION - USES CLASS OF "IN2FORMATION" and the CANHIDE ENABLES CICK TO FADE AWAY-->
-						 <!--<div class="notification information canhide">-->
-							 <div>
-              <p><strong>DEBUG: </strong>
-							{{{Debug}}}
-						</p>
-  			</div>   
-			{{/Debug}}
-	
-	
-    <div class="clearfix">&nbsp;</div>
-  <!-- START TABULAR DATA EXAMPLE -->
-  <div class="container_12">
-
-    <div class="clearfix">&nbsp;</div>
-	<h2>Ihre Zeiten</h2>
-            
-            <p>
-							Hier sehen Sie ihre Termine ...
-						</p>
-        
-    <div class="clearfix">&nbsp;</div>
-
-
-    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-    
-        <tr>
-        
-            <th width="1%" scope="col">
-            <input type="checkbox" name="checkbox" id="checkbox" class="checkall" /><label for="checkbox"></label></th>
-            
-            <th width="1%" scope="col">Id</th>
-            <th width="10%" scope="col">Zeit</th>
-            <th scope="col">Nachricht</th>
-        </tr>
-        
-	{{#Schedules}}
-        <tr>
-        
-            <td scope="col"><input type="checkbox" name="checkbox2" id="checkbox2" /></td>
-				
-						<td scope="col">{{Id}}</td>
-						<td scope="col">{{Hour}}:{{Minute}}</td>
-						<td scope="col">{{Message}}</td>
-        </tr>
-        
-	{{/Schedules}}
-         </table>
-    
-<a href="/account/new_schedule">Termin zufuegen</a>
-    <!-- END TABULAR DATA EXAMPLE -->
 		
-	
         <div class="container_12">
         
         <div id="notices" class="grid_4">
@@ -578,7 +530,145 @@
     
     <div class="clearfix">&nbsp;</div>
         
-     
+  <!-- START TABULAR DATA EXAMPLE -->
+  <div class="container_12">
+  
+	<h2>Table Example</h2>
+            
+            <p>
+                Tables are a great way of displaying lots of data, and logically. 
+                The default styling on the tables is unobtrusive and enables both text 
+                and images as show in the example below.
+            </p>
+            
+    <div class="clearfix">&nbsp;</div>
+            	
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+    
+        <tr>
+        
+            <th width="5%" scope="col">
+            <input type="checkbox" name="checkbox" id="checkbox" class="checkall" /><label for="checkbox"></label></th>
+            
+            <th width="18%" scope="col">Firstname</th>
+            <th width="16%" scope="col">Lastname</th>
+            <th width="29%" scope="col">E-Mail</th>
+            <th width="13%" scope="col">Start Date</th>
+            <th width="11%" scope="col">End Date</th>
+            <th width="8%" scope="col">Status</th>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox2" id="checkbox2" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">24/02/2010</td>
+            <td scope="col">12/12/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Online" /><img src="images/shield.png" alt="Shield" width="16" height="16" /></td>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox3" id="checkbox3" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">12/09/2009</td>
+            <td scope="col">21/12/2011</td>
+            <td scope="col"><img src="images/status_online.png" alt="Online" /><img src="images/medal_gold_3.png" alt="Gold" width="16" height="16" /></td>
+        </tr>
+        
+        <tr>
+            <td scope="col"><input type="checkbox" name="checkbox4" id="checkbox4" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">05/09/2009</td>
+            <td scope="col">12/11/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Offline" border="0" usemap="#O" /></td>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox5" id="checkbox5" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">12/06/2009</td>
+            <td scope="col">13/08/2011</td>
+            <td scope="col"><img src="images/status_online.png" alt="Online" /><img src="images/shield.png" alt="Shield" width="16" height="16" /></td>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox6" id="checkbox6" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">05/06/2009</td>
+            <td scope="col">14/7/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Offline" border="0" usemap="#O" /><img src="images/medal_silver_1.png" alt="Silver" /></td>
+        </tr>
+
+
+        
+        <tr>
+            <td scope="col"><input type="checkbox" name="checkbox7" id="checkbox7" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>                   
+            <td scope="col">12/09/2009</td>
+            <td scope="col">21/08/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Offline" border="0" usemap="#O" /><img src="images/shield.png" alt="Shield" /></td>
+        </tr>
+        
+        <tr>
+            <td scope="col"><input type="checkbox" name="checkbox8" id="checkbox8" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">08/12/2009</td>
+            <td scope="col">22/10/2011</td>
+            <td scope="col"><img src="images/status_online.png" alt="Online" /><img src="images/medal_gold_3.png" alt="Shield" width="16" height="16" /></td>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox9" id="checkbox9" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">12/09/2009</td>
+            <td scope="col">28/09/2011</td>
+            <td scope="col"><img src="images/status_online.png" alt="Online" /></td>
+        </tr>
+        
+        <tr>
+        
+            <td scope="col"><input type="checkbox" name="checkbox10" id="checkbox10" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>                
+            <td scope="col">05/04/2009</td>
+            <td scope="col">21/12/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Offline" border="0" usemap="#O" /></td>
+        </tr>
+        
+        <tr>
+            <td scope="col"><input type="checkbox" name="checkbox11" id="checkbox11" /></td>
+            <td scope="col">Johnathan</td>
+            <td scope="col">Doe</td>
+            <td scope="col"><a href="#">john.doe@myinternet.com</a></td>
+            <td scope="col">12/7/2009</td>
+            <td scope="col">21/12/2011</td>
+            <td scope="col"><img src="images/status_offline.png" alt="Offline" border="0" usemap="#O" /><img src="images/medal_bronze_1.png" alt="Bronze" /></td>
+        </tr>
+    </table>
+    
+    <!-- END TABULAR DATA EXAMPLE -->
+      
            
            
            <div class="grid_12">

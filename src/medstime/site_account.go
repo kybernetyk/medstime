@@ -9,11 +9,22 @@ import (
 
 func accountGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
+	if !session.GetBool("logged_in") {
+		ctx.Redirect(301, "/account/login")
+		return
+	}
+
+	ctx.Redirect(301, "/account/main")
+}
+
+
+func accountMainGet(ctx *web.Context) {
+	session := app.SessionMgr.CurrentSession(ctx)
 
 	fmt.Printf("session: %#v\n", session)
-	
+
 	if !session.GetBool("logged_in") {
-		ctx.Redirect(301, "/login")
+		ctx.Redirect(301, "/account/login")
 		return
 	}
 
@@ -95,7 +106,7 @@ func minutesList(selected_minute string) []interface{} {
 func accountNewScheduleGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
 	if !session.GetBool("logged_in") {
-		ctx.Redirect(301, "/login")
+		ctx.Redirect(301, "/account/login")
 		return
 	}
 
@@ -112,7 +123,7 @@ func accountNewScheduleGet(ctx *web.Context) {
 func accountNewSchedulePost(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
 	if !session.GetBool("logged_in") {
-		ctx.Redirect(301, "/login")
+		ctx.Redirect(301, "/account/login")
 		return
 	}
 
@@ -125,15 +136,15 @@ func accountNewSchedulePost(ctx *web.Context) {
 	accmgr := NewAccountManager()
 	acc, _ := accmgr.AccountForAccountId(session.GetInt("account_id"))
 
-    ihr, _ := strconv.Atoi(ctx.Params["hour"])
-    imn, _ := strconv.Atoi(ctx.Params["minute"])
+	ihr, _ := strconv.Atoi(ctx.Params["hour"])
+	imn, _ := strconv.Atoi(ctx.Params["minute"])
 
 	mgr := NewScheduleManager()
-    scitms := mgr.ScheduleItemsForAccountAndOffset(acc, SecondsFromMidnight(ihr, imn))
-    if len(scitms) > 0 {
-            error = "a schedule for this time exists already!"
-            goto bailout
-    }
+	scitms := mgr.ScheduleItemsForAccountAndOffset(acc, SecondsFromMidnight(ihr, imn))
+	if len(scitms) > 0 {
+		error = "a schedule for this time exists already!"
+		goto bailout
+	}
 
 bailout:
 	if len(error) > 0 {

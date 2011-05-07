@@ -1,13 +1,230 @@
-<html>
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
 <head>
-	<title>medstime</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Medstime</title>
+<link href="css/saas-common.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/saas-default.css" rel="stylesheet" type="text/css" media="all" />
+<!--[if IE]>
+<script src="js/html5.js"></script>
+<![endif]-->
+<link rel="pingback" href="http://saas-wp-ii.worryfreelabs.com/xmlrpc.php" />
+<meta name='robots' content='noindex,nofollow' />
+
+<script type='text/javascript' src='js/jquery/jquery.js?ver=1.4.2'></script> 
+<script type='text/javascript' src='js/easySlider1.5.js?ver=3.0'></script>
+<script type='text/javascript' src='js/saas.js?ver=3.0'></script>
+<script type='text/javascript' src='js/jquery.cookie.min.js?ver=3.0'></script>
+<script type='text/javascript' src='js/saas.twitter.js?ver=3.0'></script>
+
 </head>
-<body>
-	{{#Accid}}
-		<h1>Account Id: {{Accid}}</h1>
-	{{/Accid}}
-	
-<a href="/login">Yo! Login?</a><br>
-<a href="/signup">Yo! Sign Up?</a><br>
+<body class="home page page-template-page-home-php">
+<div class="header">
+	<div>
+		<div class="center">
+			<div class="topLinks">
+				<div class="menu-top-links-container">
+					<ul id="menu-top-links" class="menu">
+						<li class="menu-item"><a href="about.html">Ueber Uns</a></li>
+						<li class="menu-item"><a href="blog.html">Blog</a></li>
+						<li class="menu-item"><a href="help.html">Hilfe</a></li>
+						<li class="menu-item"><a href="contact-us.html">Kontakt</a></li>
+					</ul>
+				</div>
+			</div>
+			<h1 id="logo"><a href="home.html"><img src="images/logo.png" alt="SaaS Theme II" /></a></h1>
+			<div class="nav">
+				<div class="menu-main-nav-container">
+					<ul id="menu-main-nav" class="menu">
+						<li class="menu-item"><a href="tour.html"><span>Tour</span></a></li>
+						<li class="menu-item"><a href="plans-pricing.html"><span>Preise</span></a></li>
+						{{^Accid}}
+							<li class="menu-item"><a href="/account/login"><span>Einloggen</span></a></li>
+						{{/Accid}}
+						{{#Accid}}
+							<li class="menu-item"><a href="/account"><span>Kundenbereich</span></a></li>
+						{{/Accid}}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--div.header end -->
+<!--div.container start -->
+<div class="container">
+	<div class="center">				
+	<!--	<div class="tweets">
+			<div>
+				<strong class="themeteam">TWITTER</strong>
+				<span class="tweet">Loading tweet... <a class="view-more" href="#">View More &raquo;</a></span>
+			</div>
+		</div>
+	-->
+		<div class="proms">
+			<div>
+				<div class="half left">
+					<div class="intro">
+						<h2>Nie wieder Medikamente vergessen!</h2>
+						<p>
+							Mit Medstime.de werden Sie puenktlich daran erinnert Ihre Medikamente zu nehmen. Sie koennen unter vielen Benachrichtiungsoptionen waehlen. Zum Beispiel <b>SMS</b> oder <b>Telefonanrufe</b>. Unser System erinnert Sie zuverlaessig an die Medikamenteneinnahme!	
+						</p>
+					</div>
+					<div class="benefits">
+						<ul>				
+							<li>
+								<div class="icon">
+									<img src="images/i_book.png" alt="Benefit Number One" />
+								</div>
+								<div class="content">
+									<h3>Puenktlich</h3>
+									<p>Unser System benachrichtigt sie zuverlaessig.</p>
+								</div>
+							</li>
+
+							<li>
+								<div class="icon">
+									<img src="images/i_stock.png" alt="Benefit Number Two" />
+								</div>
+								<div class="content">
+									<h3>Vielfaeltig</h3>
+									<p>Sie koennen unter 83.5 Benachrichtungsoptionen waehlen.</p>
+								</div>
+							</li>
+
+							<li>
+								<div class="icon">
+									<img src="images/i_gear.png" alt="Benefit Number Three" />
+								</div>
+								<div class="content">
+									<h3>Kostenlos - Preiswert</h3>
+									<p>Wir sind ein Non-Profit und sind stehts bemueht die Preise so niedrig wie moeglich zu halten.</p>
+								</div>
+							</li>
+
+							<li>
+								<div class="icon">
+									<img src="images/i_star.png" alt="Benefit Number Four" />
+								</div>
+								<div class="content">
+									<h3>Benutzerfreundlich</h3>
+									<p>Einfache Bedienung und hilfsbereiter Kundenservice.</p>
+								</div>
+							</li>				
+						</ul>
+					</div>
+				</div>
+				<div class="half right">
+					<div class="slider">
+						<div>
+							<ul>
+								<li><img src="images/screenshot.jpg" alt="Title 1" /></li>
+								<li><img src="images/screenshot.jpg" alt="Title 2" /></li>
+								<li><img src="images/screenshot.jpg" alt="Title 3" /></li>
+								<li><img src="images/screenshot.jpg" alt="Title 4" /></li>
+							</ul>
+						</div>
+					</div>
+					<div class="call-to-action a-center">
+						<a href="sign-up.html"><img src="images/btn-free-trial.png" alt="Free Trial!" /></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="features3">
+			<ul>	
+				<li>
+					<div class="icon">
+						<img src="images/step_1.png" alt="What is our web app?" />
+					</div>
+					<div class="content">
+						<h3>Was ist Medstime.de?</h3>
+						<p>
+						Medstime.de ist ein neuartiger Dienst, der versucht kranken Menschen zu helfen. Viele chronisch Kranke haben das Problem, dass sie oefters vergessen ihre Medikamente zu nehmen. Auch der Betreiber dieser Seite gehoerte dazu - und darum wurde Medstime.de ins Leben gerufen. <a href="/about.html">Lesen Sie mehr...</a>	
+						</p>
+					</div>
+				</li>
+				
+				<li>
+					<div class="icon">
+						<img src="images/step_2.png" alt="How does our app work?" />
+					</div>
+					<div class="content">
+						<h3>Wie funktionert es?</h3>
+						<p>
+						Sie registrieren sich und tragen ein, wann Sie ihre Medikamente nehmen muessen. Dann waehlen Sie eine Benachrichtigungsoption aus und erhalten fortan regelmaessig und puenktlich Erinnerungen, wenn die Medikamenteneinnahme ansteht.
+						</p>
+					</div>
+				</li>
+				
+				<li>
+					<div class="icon">
+						<img src="images/step_3.png" alt="Why do you need it?" />
+					</div>
+					<div class="content">
+						<h3>Wieviel kostet es?</h3>
+						<p>
+						Wir sind ein Non-Profit und so ist der Dienst an sich kostenlos. Einige Benachrichtungsoptionen jedoch, wie zB. SMS oder Telefonanrufe, koennen wir leider nicht kostenfrei anbieten. Pruefen Sie deshalb unsere <a href="/plans-pricing.html">Preistabelle</a>.
+						</p>
+					</div>
+				</li>	
+			</ul>
+		</div>
+	</div>
+</div>
+<!--div.container end -->
+<!--div.footer start -->
+<div class="footer">
+	<div class="prom">
+		<div class="center">
+			<h2>
+				<strong>Probieren Sie Medstime.de einfach aus!</strong>
+			</h2>
+			<div class="right"><a href="sign-up.html"><img src="images/btn-sign-up.png" alt="Sign Up!"></a></div>
+		</div>
+	</div>
+	<div class="links">
+		<div class="center">	
+			<div>
+				<h3>Company</h3>
+				<p>
+					<a href="#">Leadership</a><br />
+					<a href="#">Partners</a><br />
+					<a href="#">Investors</a>
+				</p>
+			</div>
+			<div>
+				<h3>Keep in Touch</h3>
+				<ul class="social-links">
+					<li><a href="http://twitter.com/themeteam"><img src="images/i_socialTwitter.png" alt="" /></a></li>
+					<li><a href="http://www.facebook.com/facebook-name"><img src="images/i_socialFacebook.png" alt="" /></a></li>
+					<li><a href="http://www.flickr.com/photos/flickr-name/"><img src="images/i_socialFlickr.png" alt="" /></a></li>
+					<li><a href="http://saas-wp-ii.worryfreelabs.com/feed/"><img src="images/i_socialRss.png" alt="" /></a></li>
+					<li><a href="http://linkedin.com/in/linkedin-name"><img src="images/i_socialLinkedin.png" alt="" /></a></li>
+					<li><a href="http://www.youtube.com/user/youtube-name"><img src="images/i_socialYoutube.png" alt="" /></a></li>
+				</ul>
+			</div>
+			<div>
+				<h3>Support</h3>
+				<p>
+					<a href="#">Create a Support Ticket</a><br />
+					<a href="#">FAQs</a><br />
+					<a href="#">Forum</a><br />
+					<a href="#">Live Chat</a>
+				</p>
+			</div>
+			<div>
+				<h3>SaaS Corp, Inc.</h3>
+				<p>544 Oenoke Ridge<br />
+				New Canaan, CT 06480</p>
+				<p><a href="http://gothemeteam.com/">http://gothemeteam.com/</a><br />
+				Toll Free: (800) 555-1212</p>
+			</div>		
+		</div>
+	</div>
+</div>
+<!--div.footer end -->
+
+<script type='text/javascript' src='js/jquery/jquery.form.js?ver=2.02m'></script>
 </body>
 </html>

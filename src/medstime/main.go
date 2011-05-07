@@ -33,17 +33,18 @@ func main() {
 	}
 
 	web.Config.CookieSecret = "7C19QRmwf3mHZ9CPAaPQ0hsWeufKd"
-	//web.Get("/", indexGet)
+	web.Get("/", indexGet)
 
-	web.Get("/login", loginGet)
-	web.Post("/login", loginPost)
+	web.Get("/account/login", loginGet) //if logged in -> redirect, else show login form
+	web.Post("/account/login", loginPost)
 
-	web.Get("/logout", logoutGet)
+	web.Get("/account/logout", logoutGet)
 
 	web.Get("/signup", signupGet)
 	web.Post("/signup", signupPost)
 
 	web.Get("/account", accountGet)
+	web.Get("/account/main", accountMainGet)
 	web.Get("/account/new_schedule", accountNewScheduleGet)
 	web.Post("/account/new_schedule", accountNewSchedulePost)
 
