@@ -13,15 +13,15 @@ type Application struct {
 var app Application
 var mgoSession *mgo.Session
 
-func GetDB() (db *mgo.Database, session *mgo.Session){
-    session = mgoSession.Copy()
-    tmp := session.DB("medstime")
-    db = &tmp
-    return
+func GetDB() (db *mgo.Database, session *mgo.Session) {
+	session = mgoSession.Copy()
+	tmp := session.DB("medstime")
+	db = &tmp
+	return
 }
 
 func main() {
-    var err os.Error
+	var err os.Error
 	mgoSession, err = mgo.Mongo("127.0.0.1")
 	if err != nil {
 		panic(err)

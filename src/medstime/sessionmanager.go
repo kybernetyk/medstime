@@ -11,7 +11,7 @@ import (
 )
 
 type SessionManager struct {
-	Sessions map[string]*Session //sessions by sessionid
+	sessions map[string]*Session //sessions by sessionid
 
 	//TODO: needs mutexing
 	mu sync.RWMutex
@@ -20,7 +20,7 @@ type SessionManager struct {
 
 func NewSessionManager() *SessionManager {
 	mgr := new(SessionManager)
-	mgr.Sessions = make(map[string]*Session)
+	mgr.sessions = make(map[string]*Session)
 
 	return mgr
 }
@@ -43,7 +43,7 @@ func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) 
 
 func (self *SessionManager) DestroyCurrentSession(ctx *web.Context) {
     session := self.CurrentSession(ctx)
-    self.Sessions[session.Id] = nil, false
+    self.sessions[session.Id] = nil, false
     ctx.SetSecureCookie("session_id", "", session.TimeoutAfter)
 }
 
@@ -51,7 +51,7 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	self.mu.RLock()
 	defer self.mu.RUnlock()
 
-	session, ok = self.Sessions[ses_id]
+	session, ok = self.sessions[ses_id]
 	if !ok {
 		return
 	}
@@ -59,7 +59,7 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	//check for timeout
 	now := time.Seconds()
 	if (now - session.LastActive) > session.TimeoutAfter {
-	    self.Sessions[session.Id] = nil, false
+	    self.sessions[session.Id] = nil, false
 		ok = false
 		return
 	}
@@ -79,8 +79,8 @@ func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
 
 	ses.Id = md5Hash(fmt.Sprintf("%d%d%d", rand.Int31(), time.Seconds(), rand.Int31()))
 
-	self.Sessions[ses.Id] = ses
-	session = self.Sessions[ses.Id]
+	self.sessions[ses.Id] = ses
+	session = self.sessions[ses.Id]
 
 	ctx.SetSecureCookie("session_id", session.Id, session.TimeoutAfter)
 	return
