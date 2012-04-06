@@ -10,6 +10,7 @@ import (
 
 func accountGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
+	log.Printf("%#v", session);
 	if !session.GetBool("logged_in") {
 		ctx.Redirect(301, "/account/login")
 		return
@@ -22,7 +23,7 @@ func accountGet(ctx *web.Context) {
 func accountMainGet(ctx *web.Context) {
 	session := app.SessionMgr.CurrentSession(ctx)
 
-	log.Printf("session: %#v\n", session)
+	log.Printf("main: session: %#v\n", session)
 
 	if !session.GetBool("logged_in") {
 		ctx.Redirect(301, "/account/login")
@@ -48,11 +49,18 @@ func accountMainGet(ctx *web.Context) {
 	// mgr.UpdateScheduleItem(si)
 
 	items := mgr.ScheduleItemsForAccount(acc)
-	log.Printf("%#v - %d\n", items, len(items))
+	//
 
+	//items := make([]ScheduleItem,0 )
+	items = append(items, ScheduleItem{0,0,"lol", 0})
+	log.Printf("ITEMS: %#v - %d\n", items, len(items))
+	if items == nil {
+	 	
+	} 
 	m["Schedules"] = items
-
+	log.Printf("MAP: %#v\n", m)
 	s := mustache.RenderFile("templ/account.mustache", &m)
+	
 	ctx.WriteString(s)
 }
 

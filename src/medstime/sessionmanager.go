@@ -9,6 +9,7 @@ import (
 	"github.com/hoisie/web.go"
 	"sync"
 	"time"
+	"log"
 )
 
 type SessionManager struct {
@@ -26,13 +27,16 @@ func NewSessionManager() *SessionManager {
 }
 
 func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) {
+
 	session_id, ok := ctx.GetSecureCookie("session_id")
+	log.Println("session_id = ", session_id, "ok = ", ok)
 	if !ok {
 		session = self.createSession(ctx)
 		return
 	}
 
 	session, ok = self.sessionForSessionId(session_id)
+	log.Println("session => ", session, " ok => ", ok)
 	if !ok {
 		session = self.createSession(ctx)
 		return
@@ -51,7 +55,9 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	self.mu.RLock()
 	defer self.mu.RUnlock()
 
+	log.Println("retrieving session for id ", ses_id)
 	session, ok = self.sessions[ses_id]
+	log.Println("session: ", session, " ok: ", ok)
 	if !ok {
 		return
 	}
@@ -59,6 +65,10 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	//check for timeout
 	now := time.Now()
 	if (now.Sub(session.LastActive)) > session.TimeoutAfter {
+		log.Println("session timed out!")
+		log.Println("last active: ", session.LastActive)
+		log.Println("sub(active): ", now.Sub(session.LastActive))
+		log.Println("TimeoutAfter: ", session.TimeoutAfter)
 		delete(self.sessions, session.Id)
 		ok = false
 		return
@@ -75,7 +85,7 @@ func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
 	ses := new(Session)
 	ses.Data = make(map[string]interface{})
 	ses.LastActive = time.Now()
-	ses.TimeoutAfter = 60 * 60 //1 hour
+	ses.TimeoutAfter = 3600 * time.Second
 
 	rnd1, _ := rand.Int(rand.Reader, big.NewInt(0xffffffff))
 	rnd2, _ := rand.Int(rand.Reader, big.NewInt(0xffffffff))
@@ -86,6 +96,7 @@ func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
 	session = self.sessions[ses.Id]
 
 	ctx.SetSecureCookie("session_id", session.Id, session.TimeoutAfter)
+	log.Println("new session: %#v", session)
 	return
 }
 

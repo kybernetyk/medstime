@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/hoisie/web.go"
 	"github.com/hoisie/mustache.go"
+	"log"
 )
 
 func loginGet(ctx *web.Context) {
@@ -46,6 +47,7 @@ func loginPost(ctx *web.Context) {
 	ses := app.SessionMgr.CurrentSession(ctx)
 	ses.Set("account_id", acc.Id)
 	ses.Set("logged_in", true)
+	log.Printf("ses: %#v", ses);
 
 	ctx.Redirect(301, "/account")
 }
