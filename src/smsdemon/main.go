@@ -2,34 +2,38 @@ package main
 
 import (
 	"launchpad.net/mgo"
-	"os"
-	"time"
 	"log"
+	"time"
 )
 
 var control_chan chan string = make(chan string)
 
 var mgoSession *mgo.Session
+
 func GetDB() (db *mgo.Database, session *mgo.Session) {
 	session = mgoSession.Copy()
 	tmp := session.DB("medstime")
-	db = &tmp
+	db = tmp
 	return
 }
 
-func seconds(n int64) int64 {
-	return 1000000000 * n
+func seconds(n time.Duration) time.Duration {
+	return time.Duration(1000000000 * n)
 }
 
-func minutes(n int64) int64 {
+func minutes(n time.Duration) time.Duration {
 	return seconds(60 * n)
 }
 
 func main() {
-	var err os.Error
-	mgoSession, err = mgo.Mongo("127.0.0.1")
+	var err error
+
+	log.Println("Starting SMS demon.")
+
+	log.Println("dialing mongo db ...")
+	mgoSession, err = mgo.Dial("127.0.0.1")
 	if err != nil {
-		log.Fatal(err.String())
+		log.Fatal(err.Error())
 		return
 	}
 	defer mgoSession.Close()

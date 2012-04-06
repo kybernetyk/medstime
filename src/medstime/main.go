@@ -1,9 +1,9 @@
 package main
 
 import (
-	"web"
+	"github.com/hoisie/web.go"
 	"launchpad.net/mgo"
-	"os"
+	"log"
 )
 
 type Application struct {
@@ -16,22 +16,28 @@ var mgoSession *mgo.Session
 func GetDB() (db *mgo.Database, session *mgo.Session) {
 	session = mgoSession.Copy()
 	tmp := session.DB("medstime")
-	db = &tmp
+	db = tmp
 	return
 }
 
 func main() {
-	var err os.Error
-	mgoSession, err = mgo.Mongo("127.0.0.1")
+	log.Println("starting up ...")
+	var err error
+
+	log.Println("connecting to database ...")
+	mgoSession, err = mgo.Dial("127.0.0.1")
 	if err != nil {
-		panic(err)
+		log.Fatal(err.Error())
+		return
 	}
 	defer mgoSession.Close()
 
+	log.Println("creating session manager ...")
 	app = Application{
 		SessionMgr: NewSessionManager(),
 	}
 
+	log.Println("setting routes ...")
 	web.Config.CookieSecret = "7C19QRmwf3mHZ9CPAaPQ0hsWeufKd"
 	web.Get("/", indexGet)
 
@@ -61,6 +67,7 @@ func main() {
 	// web.Get("/admin", adminGet)
 	// web.Post("/admin", adminPost)
 
+	log.Println("and running!")
 	web.Run("0.0.0.0:5555")
 
 }

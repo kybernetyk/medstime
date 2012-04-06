@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"github.com/jsz/gosms"
 	"log"
-	"github.com/jsz/gosms/sms"
+	"time"
 )
 
 func getScheduleItems(offset int) []ScheduleItem {
@@ -29,7 +29,7 @@ func getSMSInterfaceForItem(item ScheduleItem) (iface SMSInterface, ok bool) {
 func sendSMS(number, message string) {
 	log.Printf("\t\tsending '%s' to '%s' ...\n", message, number)
 
-	s := sms.NewBulkSMSSMSSender("joorek", "warbird")
+	s := gosms.NewBulkSMSSMSSender("joorek", "warbird")
 	//s.Testmode = 1     //don't send the sms, just perform an API supported test
 	s.RoutingGroup = 2 //let's use the cheap eco route
 
@@ -43,7 +43,7 @@ func sendSMS(number, message string) {
 
 	//send the sms
 	if err := s.Send(receivers, message); err != nil {
-		log.Printf("\t\tcouldn't send sms to '%s': %s\n",number, err.String())
+		log.Printf("\t\tcouldn't send sms to '%s': %s\n", number, err)
 		return
 	}
 
@@ -51,10 +51,10 @@ func sendSMS(number, message string) {
 }
 
 func DoJob() {
-	now := time.LocalTime()
+	now := time.Now()
 
-	hour := now.Hour
-	minute := now.Minute
+	hour := now.Hour()
+	minute := now.Minute()
 
 	offset := SecondsFromMidnight(hour, minute)
 	log.Printf("doing job on %.2d:%.2d -> %d ...\n", hour, minute, offset)

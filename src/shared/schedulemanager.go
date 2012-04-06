@@ -1,7 +1,7 @@
 package main
 
 import (
-	"launchpad.net/gobson/bson"
+	"launchpad.net/mgo/bson"
 	// "launchpad.net/mgo"
 )
 
@@ -59,20 +59,23 @@ func (self *ScheduleManager) ScheduleItemsForOffset(offset int) []ScheduleItem {
 	db, ses := GetDB()
 	defer ses.Close()
 
-	iter, err := db.C("scheduleitems").Find(qry).Iter()
-	if err != nil {
-		return nil
-	}
+	iter := db.C("scheduleitems").Find(qry).Iter()
 
 	var items []ScheduleItem
-	for {
-		item := ScheduleItem{}
-		err = iter.Next(&item)
-		if err != nil {
-			break
-		}
+	item := ScheduleItem{}
+	for iter.Next(&item) {
 		items = append(items, item)
+		item = ScheduleItem{}
 	}
+
+	// for {
+		
+	// 	err := iter.Next(&item)
+	// 	if err {
+	// 		break
+	// 	}
+	// 	items = append(items, item)
+	// }
 	return items
 }
 
@@ -89,20 +92,29 @@ func (self *ScheduleManager) ScheduleItemsForAccountAndOffset(account Account, o
 	db, ses := GetDB()
 	defer ses.Close()
 
-	iter, err := db.C("scheduleitems").Find(qry).Iter()
-	if err != nil {
-		return nil
-	}
+	iter := db.C("scheduleitems").Find(qry).Iter()
 
 	var items []ScheduleItem
-	for {
-		item := ScheduleItem{}
-		err = iter.Next(&item)
-		if err != nil {
-			break
-		}
+	item := ScheduleItem{}
+	for iter.Next(&item) {
 		items = append(items, item)
+		item = ScheduleItem{}
 	}
+
+	// iter, err := db.C("scheduleitems").Find(qry).Iter()
+	// if err != nil {
+	// 	return nil
+	// }
+
+	// var items []ScheduleItem
+	// for {
+	// 	item := ScheduleItem{}
+	// 	err = iter.Next(&item)
+	// 	if err != nil {
+	// 		break
+	// 	}
+	// 	items = append(items, item)
+	// }
 	return items
 }
 
@@ -158,20 +170,29 @@ func (self *ScheduleManager) scheduleItemsForScheduleId(sched_id int) (items []S
 	db, ses := GetDB()
 	defer ses.Close()
 
-	iter, err := db.C("scheduleitems").Find(qry).Iter()
-	if err != nil {
-		ok = false
-		return
+	iter := db.C("scheduleitems").Find(qry).Iter()
+
+	// var items []ScheduleItem
+	item := ScheduleItem{}
+	for iter.Next(&item) {
+		items = append(items, item)
+		item = ScheduleItem{}
 	}
 
-	for {
-		item := ScheduleItem{}
-		err = iter.Next(&item)
-		if err != nil {
-			break
-		}
-		items = append(items, item)
-	}
+	// iter, err := db.C("scheduleitems").Find(qry).Iter()
+	// if err != nil {
+	// 	ok = false
+	// 	return
+	// }
+
+	// for {
+	// 	item := ScheduleItem{}
+	// 	err = iter.Next(&item)
+	// 	if err != nil {
+	// 		break
+	// 	}
+	// 	items = append(items, item)
+	// }
 
 	ok = true
 	return

@@ -1,19 +1,24 @@
-include $(GOROOT)/src/Make.inc
+CC=go tool 6g
+LL=go tool 6l
+LIBS=
+LNAME=medstime.6
+CFLAGS=-o $(LNAME) -p medstime 
+EXECNAME=medstime
 
-TARG=medstime
-GOFILES=\
-	../shared/account.go\
-	../shared/accountmanager.go\
-	../shared/schedule.go\
-	../shared/schedulemanager.go\
-	../shared/messageinterface.go\
-	session.go\
-	sessionmanager.go\
-	../shared/errors.go\
-	site_account.go\
-	site_login.go\
-	site_signup.go\
-	site_index.go\
-	main.go
+.PHONY: all
+all: medstime 
 
-include $(GOROOT)/src/Make.cmd
+test: clean all run
+
+.PHONY: medstime 
+medstime:
+	$(CC) $(CFLAGS) ../shared/*.go *.go $(LIBS)
+	$(LL) -o $(EXECNAME) $(LNAME)
+	rm $(LNAME)
+
+clean:
+	rm -rf *.o $(EXECNAME) core *.out
+
+.PHONY: run
+run: medstime 
+	./medstime

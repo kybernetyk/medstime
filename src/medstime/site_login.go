@@ -1,8 +1,8 @@
 package main
 
 import (
-	"web"
-	"mustache"
+	"github.com/hoisie/web.go"
+	"github.com/hoisie/mustache.go"
 )
 
 func loginGet(ctx *web.Context) {

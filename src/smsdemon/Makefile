@@ -1,15 +1,24 @@
-include $(GOROOT)/src/Make.inc
+CC=go tool 6g
+LL=go tool 6l
+LIBS=
+LNAME=smsdemon.6
+CFLAGS=-o $(LNAME) -p smsdemon
+EXECNAME=smsdemon
 
-TARG=smsd
-GOFILES=\
-	../shared/db.go\
-	../shared/account.go\
-	../shared/accountmanager.go\
-	../shared/schedule.go\
-	../shared/schedulemanager.go\
-	../shared/errors.go\
-	../shared/messageinterface.go\
-	job.go\
-	main.go
+.PHONY: all
+all: smsdemon	
 
-include $(GOROOT)/src/Make.cmd
+test: clean all run
+
+.PHONY: smsdemon 
+smsdemon:
+	$(CC) $(CFLAGS) ../shared/*.go *.go $(LIBS)
+	$(LL) -o $(EXECNAME) $(LNAME)
+	rm $(LNAME)
+
+clean:
+	rm -rf *.o $(EXECNAME) core *.out
+
+.PHONY: run
+run: smsdemon 
+	./smsdemon

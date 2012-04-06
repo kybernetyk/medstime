@@ -1,8 +1,8 @@
 package main
 
 import (
-    "web"
-    "mustache"
+    "github.com/hoisie/web.go"
+    "github.com/hoisie/mustache.go"
 //    "fmt"
 )
 
@@ -51,7 +51,7 @@ func signupPost(ctx *web.Context) {
     accmgr := NewAccountManager()
     acc_id, err := accmgr.CreateAccount(acc)
     if err != nil {
-        ctx.Redirect(301, "/signup?err=" + err.String())
+        ctx.Redirect(301, "/signup?err=" + err.Error())
         return
     }
     

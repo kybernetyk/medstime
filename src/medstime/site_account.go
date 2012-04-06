@@ -1,8 +1,8 @@
 package main
 
 import (
-	"web"
-	"mustache"
+	"github.com/hoisie/web.go"
+	"github.com/hoisie/mustache.go"
 	"fmt"
 	"strconv"
 	"log"
@@ -129,10 +129,6 @@ func accountNewSchedulePost(ctx *web.Context) {
 	}
 
 	error := ""
-	if len(ctx.Params["message"]) == 0 {
-		error = "message no gief?"
-		goto bailout
-	}
 
 	accmgr := NewAccountManager()
 	acc, _ := accmgr.AccountForAccountId(session.GetInt("account_id"))
@@ -142,6 +138,11 @@ func accountNewSchedulePost(ctx *web.Context) {
 
 	mgr := NewScheduleManager()
 	scitms := mgr.ScheduleItemsForAccountAndOffset(acc, SecondsFromMidnight(ihr, imn))
+	if len(ctx.Params["message"]) == 0 {
+		error = "message no gief?"
+		goto bailout
+	}
+
 	if len(scitms) > 0 {
 		error = "a schedule for this time exists already!"
 		goto bailout

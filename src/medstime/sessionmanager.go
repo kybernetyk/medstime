@@ -2,12 +2,13 @@ package main
 
 import (
 	//    "os"
-	"rand"
-	"fmt"
-	"time"
-	"sync"
 	"crypto/md5"
-	"web"
+	"crypto/rand"
+	"math/big"
+	"fmt"
+	"github.com/hoisie/web.go"
+	"sync"
+	"time"
 )
 
 type SessionManager struct {
@@ -16,7 +17,6 @@ type SessionManager struct {
 	//TODO: needs mutexing
 	mu sync.RWMutex
 }
-
 
 func NewSessionManager() *SessionManager {
 	mgr := new(SessionManager)
@@ -42,9 +42,9 @@ func (self *SessionManager) CurrentSession(ctx *web.Context) (session *Session) 
 }
 
 func (self *SessionManager) DestroyCurrentSession(ctx *web.Context) {
-    session := self.CurrentSession(ctx)
-    self.sessions[session.Id] = nil, false
-    ctx.SetSecureCookie("session_id", "", session.TimeoutAfter)
+	session := self.CurrentSession(ctx)
+	delete(self.sessions, session.Id)
+	ctx.SetSecureCookie("session_id", "", session.TimeoutAfter)
 }
 
 func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session, ok bool) {
@@ -57,13 +57,13 @@ func (self *SessionManager) sessionForSessionId(ses_id string) (session *Session
 	}
 
 	//check for timeout
-	now := time.Seconds()
-	if (now - session.LastActive) > session.TimeoutAfter {
-	    self.sessions[session.Id] = nil, false
+	now := time.Now()
+	if (now.Sub(session.LastActive)) > session.TimeoutAfter {
+		delete(self.sessions, session.Id)
 		ok = false
 		return
 	}
-//	session.LastActive = now
+	//	session.LastActive = now
 	ok = true
 	return
 }
@@ -74,10 +74,13 @@ func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
 
 	ses := new(Session)
 	ses.Data = make(map[string]interface{})
-	ses.LastActive = time.Seconds()
+	ses.LastActive = time.Now()
 	ses.TimeoutAfter = 60 * 60 //1 hour
 
-	ses.Id = md5Hash(fmt.Sprintf("%d%d%d", rand.Int31(), time.Seconds(), rand.Int31()))
+	rnd1, _ := rand.Int(rand.Reader, big.NewInt(0xffffffff))
+	rnd2, _ := rand.Int(rand.Reader, big.NewInt(0xffffffff))
+
+	ses.Id = md5Hash(fmt.Sprintf("%d%d%d", rnd1 , time.Now(), rnd2))
 
 	self.sessions[ses.Id] = ses
 	session = self.sessions[ses.Id]
@@ -89,5 +92,5 @@ func (self *SessionManager) createSession(ctx *web.Context) (session *Session) {
 func md5Hash(str string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(str))
-	return fmt.Sprintf("%x", hasher.Sum())
+	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
